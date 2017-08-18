@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>&nbsp;</title>
+	<link rel="stylesheet" href="options.css">
+</head>
+
+<body>
+	<div id="commandOrderSection">
+		<div data-i18n="commandOrderDescription"></div>
+		<div id="commandOrder">
+			<div class="command" data-command="lastAccessed"></div>
+			<div class="command" data-command="left"></div>
+			<div class="command" data-command="right"></div>
+			<div class="command" data-command="opener"></div>
+		</div>
+	</div>
+	<p data-i18n="iconAttribution"></p>
+	<template id="commandTemplate">
+		<div class="up">
+			<img src="icons/up_arrow.svg" alt="Up">
+		</div>
+		<div class="down">
+			<img src="icons/down_arrow.svg" alt="Down">
+		</div>
+		<span class="commandText"></span>
+	</template>
+	<script src="options.js"></script>
+</body>
+
+</html>

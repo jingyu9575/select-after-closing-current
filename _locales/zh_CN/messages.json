@@ -1,0 +1,26 @@
+{
+	"extensionName": {
+		"message": "关闭当前页后选取"
+	},
+	"extensionDescription": {
+		"message": "设置关闭当前标签页后选取哪个标签页。"
+	},
+	"commandOrderDescription": {
+		"message": "关闭当前标签页后，按以下顺序尝试选取："
+	},
+	"iconAttribution": {
+		"message": "扩展图标: \"Tab\"，作者 IconfactoryTeam，来自 thenounproject.com。"
+	},
+	"command_lastAccessed": {
+		"message": "最近访问标签页"
+	},
+	"command_left": {
+		"message": "左侧标签页"
+	},
+	"command_right": {
+		"message": "右侧标签页"
+	},
+	"command_opener": {
+		"message": "父标签页（即将到来的 Firefox 功能）"
+	}
+}

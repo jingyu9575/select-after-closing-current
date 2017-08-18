@@ -1,0 +1,26 @@
+{
+	"extensionName": {
+		"message": "Select After Closing Current"
+	},
+	"extensionDescription": {
+		"message": "Configure which tab to select after closing the current tab."
+	},
+	"commandOrderDescription": {
+		"message": "After closing the current tab, try selecting in this order: "
+	},
+	"iconAttribution": {
+		"message": "Extension icon: \"Tab\" by IconfactoryTeam, from thenounproject.com."
+	},
+	"command_lastAccessed": {
+		"message": "Last accessed tab"
+	},
+	"command_left": {
+		"message": "Left tab"
+	},
+	"command_right": {
+		"message": "Right tab"
+	},
+	"command_opener": {
+		"message": "Opener tab (upcoming Firefox feature)"
+	}
+}
