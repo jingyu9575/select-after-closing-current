@@ -10,6 +10,8 @@ After installing you can configure this extension by clicking Preferences of it 
 
 The "opener tab" option uses an upcoming Firefox feature and doesn't work in the current Firefox version (2017-08-14). See [this bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1238314) for technical details.
 
+---
+
 # 关闭当前页后选取
 
 火狐扩展：设置关闭当前标签页后选取哪个标签页。
