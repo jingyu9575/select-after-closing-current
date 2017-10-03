@@ -4,47 +4,82 @@ for (const element of document.querySelectorAll('[data-i18n]'))
 const commandTemplate = document.getElementById("commandTemplate")
 const commandOrderDiv = document.getElementById("commandOrder")
 
+function updateSingleRelationStyle(command) {
+	const relationSelect = command.querySelector('.relationSelect')
+	const option = relationSelect.options[relationSelect.selectedIndex]
+	command.classList.toggle('singleRelation', option &&
+		option.classList.contains('singleRelation'))
+}
+
+function addCommand() {
+	const command = document.createElement('div')
+	command.classList.add('command')
+	command.appendChild(document.importNode(commandTemplate.content, true))
+	for (const option of command.querySelectorAll('select option'))
+		option.innerText = browser.i18n.getMessage(
+			`${option.parentElement.dataset['key']}_${option.value}`)
+	for (const button of command.querySelectorAll('button'))
+		button.title = browser.i18n.getMessage(button.dataset['i18nTitle'])
+	commandOrderDiv.appendChild(command)
+	commandOrderDiv.classList.add('hasCommand')
+
+	command.querySelector('.relationSelect').addEventListener('change',
+		() => { updateSingleRelationStyle(command) })
+
+	command.querySelector('.up').addEventListener('click', () => {
+		const prev = command.previousElementSibling
+		if (prev == null || !prev.classList.contains('command')) return
+		command.parentNode.insertBefore(command, prev)
+	})
+	command.querySelector('.down').addEventListener('click', () => {
+		const next = command.nextElementSibling
+		if (next == null || !next.classList.contains('command')) return
+		command.parentNode.insertBefore(command, next.nextElementSibling)
+	})
+	command.querySelector('.remove').addEventListener('click', () => {
+		command.remove()
+		commandOrderDiv.classList.toggle('hasCommand',
+			!!commandOrderDiv.querySelector(".command"))
+	})
+
+	for (const select of command.querySelectorAll('select'))
+		select.addEventListener('change', saveSettings)
+	for (const button of command.querySelectorAll('button'))
+		button.addEventListener('click', saveSettings)
+	return command
+}
+
+document.getElementById('add').addEventListener('click',
+	() => { addCommand(); saveSettings() })
+
+let settings = {}
+
 async function reloadSettings() {
-	const { commandOrder } = await browser.storage.local.get()
-	if (!commandOrder) return
-	for (const commandString of commandOrder.slice().reverse()) {
-		for (const command of commandOrderDiv.querySelectorAll('.command')) {
-			if (command.dataset['command'] === commandString) {
-				if (command !== command.parentNode.firstElementChild)
-					command.parentNode.insertBefore(command,
-						command.parentNode.firstElementChild)
-				break
-			}
-		}
+	settings = await browser.runtime.sendMessage(
+		{ type: 'reloadSettings' })
+	for (const command of commandOrderDiv.querySelectorAll('.command'))
+		command.remove()
+	for (const obj of settings.commandOrder) {
+		const command = addCommand()
+		for (const select of command.querySelectorAll('select'))
+			select.value = obj[select.dataset['key']]
+		updateSingleRelationStyle(command)
 	}
 }
 
-async function moveCommand(command, position) {
-	command.parentNode.insertBefore(command, position)
-
-	await browser.storage.local.set({
-		commandOrder: [...commandOrderDiv.querySelectorAll('.command')].map(
-			v => v.dataset['command'])
-	})
+async function saveSettings() {
+	settings.commandOrder = []
+	for (const command of commandOrderDiv.querySelectorAll('.command')) {
+		const obj = {}
+		for (const select of command.querySelectorAll('select'))
+			obj[select.dataset['key']] = select.value
+		settings.commandOrder.push(obj)
+	}
+	await browser.storage.local.set(settings)
 	await browser.runtime.sendMessage({ type: 'reloadSettings' })
 }
 
 void async function () {
 	await reloadSettings()
-	for (const command of commandOrderDiv.querySelectorAll('.command')) {
-		command.appendChild(document.importNode(commandTemplate.content, true))
-		command.querySelector('.commandText').innerText =
-			browser.i18n.getMessage('command_' + command.dataset['command'])
-
-		command.querySelector('.up').addEventListener('click', async () => {
-			const prev = command.previousElementSibling
-			if (prev == null) return
-			await moveCommand(command, prev)
-		}, false)
-		command.querySelector('.down').addEventListener('click', async () => {
-			const next = command.nextElementSibling
-			if (next == null) return
-			await moveCommand(command, next.nextElementSibling)
-		}, false)
-	}
+	document.getElementById('add').disabled = false
 }()

@@ -22,5 +22,56 @@
 	},
 	"command_opener": {
 		"message": "Opener tab (upcoming Firefox feature)"
+	},
+	"add": {
+		"message": "Add"
+	},
+	"up": {
+		"message": "Move up"
+	},
+	"down": {
+		"message": "Move down"
+	},
+	"remove": {
+		"message": "Remove"
+	},
+	"position_first": {
+		"message": "First"
+	},
+	"position": {
+		"message": "Position"
+	},
+	"position_left": {
+		"message": "Left"
+	},
+	"position_right": {
+		"message": "Right"
+	},
+	"position_last": {
+		"message": "Last"
+	},
+	"relation": {
+		"message": "Relation"
+	},
+	"relation_none": {
+		"message": "tab"
+	},
+	"relation_lastAccessed": {
+		"message": "Last accessed tab"
+	},
+	"relation_parent": {
+		"message": "Parent tab"
+	},
+	"relation_sibling": {
+		"message": "sibling tab"
+	},
+	"relation_child": {
+		"message": "child tab"
+	},
+	"relation_unread": {
+		"message": "unread tab"
+	},
+	"actions": {
+		"message": "Actions"
 	}
 }

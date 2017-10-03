@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>&nbsp;</title>
+	<title data-i18n="extensionName"></title>
 	<link rel="stylesheet" href="options.css">
 </head>
 
@@ -11,21 +11,42 @@
 	<div id="commandOrderSection">
 		<div data-i18n="commandOrderDescription"></div>
 		<div id="commandOrder">
-			<div class="command" data-command="lastAccessed"></div>
-			<div class="command" data-command="left"></div>
-			<div class="command" data-command="right"></div>
-			<div class="command" data-command="opener"></div>
+			<div id="commandOrderHeader">
+				<span data-i18n="position"></span>
+				<span data-i18n="relation"></span>
+				<span id="actionsHeader" data-i18n="actions"></span>
+			</div>
 		</div>
+		<button id="add" disabled>
+			<img src="icons/plus.svg">
+			<label data-i18n="add"></label>
+		</button>
 	</div>
 	<p data-i18n="iconAttribution"></p>
 	<template id="commandTemplate">
-		<div class="up">
-			<img src="icons/up_arrow.svg" alt="Up">
-		</div>
-		<div class="down">
-			<img src="icons/down_arrow.svg" alt="Down">
-		</div>
-		<span class="commandText"></span>
+		<select class="positionSelect" data-key="position">
+			<option value="first" selected></option>
+			<option value="left"></option>
+			<option value="right"></option>
+			<option value="last"></option>
+		</select>
+		<select class="relationSelect" data-key="relation">
+			<option value="none" selected></option>
+			<option value="lastAccessed" class="singleRelation"></option>
+			<option value="parent" class="singleRelation"></option>
+			<option value="sibling"></option>
+			<option value="child"></option>
+			<option value="unread"></option>
+		</select>
+		<button class="up" data-i18n-title="up">
+			<img src="icons/arrow-up.svg">
+		</button>
+		<button class="down" data-i18n-title="down">
+			<img src="icons/arrow-down.svg">
+		</button>
+		<button class="remove" data-i18n-title="remove">
+			<img src="icons/delete.svg">
+		</button>
 	</template>
 	<script src="options.js"></script>
 </body>
