@@ -34,6 +34,8 @@ browser.runtime.onMessage.addListener(async message => {
 	}
 })
 
+const tabRelationsMap = new Map()
+
 class Tracker {
 	constructor(windowId) {
 		this.windowId = windowId
@@ -54,8 +56,11 @@ class Tracker {
 			if (this.activeIds[this.activeIds.length - 1] === tabId) {
 				this.freeze(true)
 				for (const command of settings.commandOrder) {
-					const nextId = await this.selectCommand(command)
-					if (nextId !== undefined) {
+					let nextId
+					try {
+						nextId = await this.selectCommand(command)
+					} catch (err) { console.error(err) }
+					if (nextId != undefined) {
 						await browser.tabs.update(nextId, { active: true })
 						this.unfreezeId = nextId
 						return
@@ -110,10 +115,10 @@ class Tracker {
 		const relationMethod = `selectRelation_${command.relation}`
 		if (!(relationMethod in this)) return undefined
 		const ids = await this[relationMethod]()
-		if (typeof ids === 'number' || ids === undefined) return ids
+		if (typeof ids === 'number' || ids == undefined) return ids
 
-		const tabs = Promise.all(ids.map(
-			id => browser.tabs.get(id).catch(() => undefined)))
+		const tabs = (await Promise.all(ids.map(
+			id => browser.tabs.get(id).catch(() => undefined))))
 			.filter(tab => tab && tab.windowId === this.windowId && (
 				command.position === 'left' ? tab.index < this.activeIndex :
 					command.position === 'right' ? tab.index >= this.activeIndex :
@@ -123,7 +128,7 @@ class Tracker {
 		return tabs.reduce((v0, v1) => (v0.index < v1.index) !== flip ? v0 : v1).id
 	}
 
-	async selectRelation_lastAccessed() {
+	selectRelation_lastAccessed() {
 		return this.activeIds[this.activeIds.length - 2]
 	}
 
@@ -134,8 +139,20 @@ class Tracker {
 		} catch (err) { return undefined }
 	}
 
-	async selectRelation_sibling() { }
-	async selectRelation_child() { }
+	selectRelation_sibling() {
+		const tabId = this.activeIds[this.activeIds.length - 1]
+		const obj = tabRelationsMap.get(tabId)
+		if (!obj || !obj.siblings) return undefined
+		return [...obj.siblings].filter(v => v !== tabId)
+	}
+
+	selectRelation_child() {
+		const tabId = this.activeIds[this.activeIds.length - 1]
+		const obj = tabRelationsMap.get(tabId)
+		if (!obj || !obj.children) return undefined
+		return [...obj.children]
+	}
+
 	async selectRelation_unread() { }
 }
 
@@ -167,7 +184,17 @@ reloadSettings().then(() => {
 	browser.tabs.onRemoved.addListener(async (tabId, { windowId, isWindowClosing }) => {
 		if (isWindowClosing) return
 		await tracker(windowId).remove(tabId)
+		tabRelationsMap.delete(tabId)
 	})
 
 	browser.windows.onRemoved.addListener(windowId => { trackerMap.delete(windowId) })
+
+	browser.tabs.onCreated.addListener(({ id, openerTabId }) => {
+		if (openerTabId == undefined) return
+		let parentObj = tabRelationsMap.get(openerTabId)
+		if (!parentObj) tabRelationsMap.set(openerTabId, parentObj = {})
+		if (!parentObj.children) parentObj.children = new Set()
+		parentObj.children.add(id)
+		tabRelationsMap.set(id, { siblings: parentObj.children })
+	})
 })
