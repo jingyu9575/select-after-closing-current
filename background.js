@@ -1,7 +1,9 @@
-let settings = {}
+const DEBUG = true
+
+let globalSettings = { commandOrder: [] }
 
 async function reloadSettings() {
-	settings = await browser.storage.local.get()
+	const settings = await browser.storage.local.get()
 	settings.commandOrder = settings.commandOrder || []
 	settings.version = settings.version || 0
 	if (typeof settings.commandOrder[0] === 'string') settings.version = 1
@@ -24,177 +26,226 @@ async function reloadSettings() {
 		}
 		await browser.storage.local.set(settings)
 	}
+	globalSettings = settings
 }
 
 browser.runtime.onMessage.addListener(async message => {
 	if (!message || typeof message !== 'object') return
 	if (message.type === 'reloadSettings') {
 		await reloadSettings()
-		return settings
+		return globalSettings
 	}
 })
 
-const tabRelationsMap = new Map()
+function mapInsert(map, key, fn) {
+	if (map.has(key)) return map.get(key)
+	const value = fn()
+	map.set(key, value)
+	return value
+}
 
-class Tracker {
-	constructor(windowId) {
-		this.windowId = windowId
-		this.activeIndex = undefined
-		this.activeOpener = undefined
-		this.activeIds = []
-
-		this.freeze(false)
+class InsertableMap extends Map {
+	constructor(defaultConstructor, entries) {
+		super(entries)
+		this.defaultConstructor = defaultConstructor
 	}
 
-	removeActiveId(tabId) {
-		const i = this.activeIds.indexOf(tabId)
-		if (i > -1) this.activeIds.splice(i, 1)
+	insert(key, fn) {
+		return mapInsert(this, key, () => (fn || this.defaultConstructor)(key))
 	}
+}
 
-	async remove(tabId) {
+function arrayRemoveOne(arr, item) {
+	const i = arr.indexOf(item)
+	if (i > -1) arr.splice(i, 1)
+}
+
+const tabInfoMap = new Map()
+const windowInfoMap = new InsertableMap(() => ({
+	tabs: [], recent: [],
+	frozenStatus: undefined /* as undefined | number | number[] */,
+}))
+
+function checkConsistency(skipActive) {
+	if (!DEBUG) return
+	browser.tabs.query({}).then(tabs => {
 		try {
-			if (this.activeIds[this.activeIds.length - 1] === tabId) {
-				this.freeze(true)
-				for (const command of settings.commandOrder) {
-					let nextId
-					try {
-						nextId = await this.selectCommand(command)
-					} catch (err) { console.error(err) }
-					if (nextId != undefined) {
-						await browser.tabs.update(nextId, { active: true })
-						this.unfreezeId = nextId
-						return
-					}
+			for (const tab of tabs) {
+				if (tabInfoMap.get(tab.id).windowId !== tab.windowId)
+					throw new Error(`inconsistent windowId of ${tab.id}`)
+				if (windowInfoMap.get(tab.windowId).tabs[tab.index] !== tab.id)
+					throw new Error(`inconsistent index of ${tab.id}`)
+				if (!skipActive && tab.active) {
+					const recent = windowInfoMap.get(tab.windowId).recent.slice(-1)[0]
+					if (recent !== undefined && recent !== tab.id)
+						throw new Error(`inconsistent active of ${tab.id}`)
 				}
-				this.freeze(false)
 			}
-		} finally {
-			this.removeActiveId(tabId)
-			await this.trigger()
-		}
-	}
-
-	freeze(isFrozen) {
-		this.isFrozen = isFrozen
-		this.unfreezeId = undefined
-		this.pendingIds = []
-	}
-
-	async trigger() {
-		const [tab] = await browser.tabs.query({
-			active: true, windowId: this.windowId
-		})
-		if (this.isFrozen) {
-			if (tab) this.pendingIds.push(tab.id)
-			if (this.pendingIds.includes(this.unfreezeId)) {
-				this.freeze(false)
-				await trigger()
+			for (const [windowId, windowInfo] of windowInfoMap.entries()) {
+				if (windowInfo.tabs.length !== tabs.filter(
+					tab => tab.windowId === windowId).length)
+					throw new Error(`inconsistent windowId of ${windowId}`)
 			}
-			return
-		}
-		if (tab) {
-			this.removeActiveId(tab.id)
-			this.activeIds.push(tab.id)
-			this.activeIndex = tab.index
-			this.activeOpener = tab.openerTabId
-		} else {
-			this.activeIndex = undefined
-			this.activeOpener = undefined
-		}
-	}
-
-	async selectCommand(command) {
-		if (command.relation === 'none') {
-			const index = {
-				first: 0, last: undefined,
-				left: this.activeIndex - 1, right: this.activeIndex,
-			}[command.position]
-			const tabs = await browser.tabs.query({ index, windowId: this.windowId })
-			return tabs.length ? tabs[tabs.length - 1].id : undefined
-		}
-		const relationMethod = `selectRelation_${command.relation}`
-		if (!(relationMethod in this)) return undefined
-		const ids = await this[relationMethod]()
-		if (typeof ids === 'number' || ids == undefined) return ids
-
-		const tabs = (await Promise.all(ids.map(
-			id => browser.tabs.get(id).catch(() => undefined))))
-			.filter(tab => tab && tab.windowId === this.windowId && (
-				command.position === 'left' ? tab.index < this.activeIndex :
-					command.position === 'right' ? tab.index >= this.activeIndex :
-						/* first, last */ true))
-		if (!tabs.length) return undefined
-		const flip = command.position === 'last' || command.position === 'left'
-		return tabs.reduce((v0, v1) => (v0.index < v1.index) !== flip ? v0 : v1).id
-	}
-
-	selectRelation_lastAccessed() {
-		return this.activeIds[this.activeIds.length - 2]
-	}
-
-	async selectRelation_parent() {
-		try {
-			const tab = await browser.tabs.get(this.activeOpener)
-			return tab.windowId === this.windowId ? tab.id : undefined
-		} catch (err) { return undefined }
-	}
-
-	selectRelation_sibling() {
-		const tabId = this.activeIds[this.activeIds.length - 1]
-		const obj = tabRelationsMap.get(tabId)
-		if (!obj || !obj.siblings) return undefined
-		return [...obj.siblings].filter(v => v !== tabId)
-	}
-
-	selectRelation_child() {
-		const tabId = this.activeIds[this.activeIds.length - 1]
-		const obj = tabRelationsMap.get(tabId)
-		if (!obj || !obj.children) return undefined
-		return [...obj.children]
-	}
-
-	async selectRelation_unread() { }
+		} catch (err) { console.error(err) }
+	})
 }
 
-const trackerMap = new Map()
-
-function tracker(windowId) {
-	let result = trackerMap.get(windowId)
-	if (!result) trackerMap.set(windowId, result = new Tracker(windowId))
-	return result
+function doActivateTab(tabId, windowInfo) {
+	arrayRemoveOne(windowInfo.recent, tabId)
+	windowInfo.recent.push(tabId)
 }
 
-reloadSettings().then(() => {
-	browser.tabs.onActivated.addListener(async ({ tabId, windowId }) => {
-		await tracker(windowId).trigger()
-	})
+function unfreezeWindow(windowInfo, selectedId) {
+	if (DEBUG) console.log(`unfreezeWindow ${selectedId}`)
+	const pendingIds = windowInfo.frozenStatus
+	windowInfo.frozenStatus = selectedId
+	if (!Array.isArray(pendingIds)) return
+	const index = selectedId === undefined ? /* all */ 0 :
+		pendingIds.indexOf(selectedId)
+	if (index === -1) return
+	windowInfo.frozenStatus = undefined
+	for (let i = index; i < pendingIds.length; ++i)
+		doActivateTab(pendingIds[i], windowInfo)
+}
 
-	browser.tabs.onMoved.addListener(async (tabId, { windowId }) => {
-		await tracker(windowId).trigger()
-	})
+const singleRelationMethods = {
+	lastAccessed({ tabId, windowInfo }) {
+		const last = windowInfo.recent[windowInfo.recent.length - 1]
+		return last !== tabId ? last :
+			windowInfo.recent[windowInfo.recent.length - 2]
+	},
+	parent({ tabId, windowId }) {
+		const result = tabInfoMap.get(tabId).openerTabId
+		return result != undefined && tabInfoMap.has(result) &&
+			tabInfoMap.get(result).windowId === windowId ? result : undefined
+	},
+}
 
-	browser.tabs.onDetached.addListener(async (tabId, { oldWindowId }) => {
-		await tracker(oldWindowId).remove(tabId)
-	})
+const multipleRelationPredicates = {
+	none() { return true },
+	sibling(target, { tabId }) {
+		const opener0 = tabInfoMap.get(tabId).openerTabId,
+			opener1 = tabInfoMap.get(target).openerTabId
+		return opener0 != undefined && opener0 === opener1
+	},
+	child(target, { tabId }) {
+		return tabInfoMap.get(target).openerTabId === tabId
+	},
+	unread() { return false },
+}
 
-	browser.tabs.onAttached.addListener(async (tabId, { newWindowId }) => {
-		await tracker(newWindowId).trigger()
-	})
+function selectCommand(command, data /* { tabId, windowId, windowInfo } */) {
+	if (command.relation in singleRelationMethods)
+		return singleRelationMethods[command.relation](data)
+	if (command.relation in multipleRelationPredicates) {
+		const { tabs } = data.windowInfo
+		const index = ['left', 'right'].includes(command.position) ?
+			tabs.indexOf(data.tabId) : 0
+		if (index === -1) return undefined
+		const [begin, end, step] = {
+			first: [0, tabs.length, 1],
+			last: [tabs.length - 1, -1, -1],
+			left: [index - 1, -1, -1],
+			right: [index + 1, tabs.length, 1],
+		}[command.position]
+		const predicate = multipleRelationPredicates[command.relation]
+		for (let i = begin; i !== end; i += step)
+			if (tabs[i] !== data.tabId && predicate(tabs[i], data))
+				return tabs[i]
+	}
+	return undefined
+}
 
-	browser.tabs.onRemoved.addListener(async (tabId, { windowId, isWindowClosing }) => {
-		if (isWindowClosing) return
-		await tracker(windowId).remove(tabId)
-		tabRelationsMap.delete(tabId)
-	})
+function doDetachTab(tabId, windowId) {
+	const windowInfo = windowInfoMap.insert(windowId)
+	if (typeof windowInfo.frozenStatus === 'number' &&
+		tabId === windowInfo.frozenStatus)
+		windowInfo.frozenStatus = undefined
+	if (tabId === windowInfo.recent[windowInfo.recent.length - 1] &&
+		!Array.isArray(windowInfo.frozenStatus)) {
+		for (const command of globalSettings.commandOrder) {
+			let selectedId
+			try {
+				selectedId = selectCommand(command,
+					{ tabId, windowId, windowInfo })
+			} catch (err) { console.error(err) }
+			if (selectedId !== undefined) {
+				if (DEBUG) console.log(`selected ${selectedId}`)
+				windowInfo.frozenStatus = []
+				browser.tabs.update(selectedId, { active: true }).then(
+					() => unfreezeWindow(windowInfo, selectedId),
+					err => {
+						console.error(err)
+						unfreezeWindow(windowInfo, undefined)
+					}
+				)
+				break
+			}
+		}
+	}
+	arrayRemoveOne(windowInfo.tabs, tabId)
+	arrayRemoveOne(windowInfo.recent, tabId)
+}
 
-	browser.windows.onRemoved.addListener(windowId => { trackerMap.delete(windowId) })
+function doCreateTab({ id, windowId, index, openerTabId }) {
+	if (tabInfoMap.has(id)) return // may be called twice on startup
+	tabInfoMap.set(id, { windowId, openerTabId })
+	windowInfoMap.insert(windowId).tabs.splice(index, 0, id)
+}
 
-	browser.tabs.onCreated.addListener(({ id, openerTabId }) => {
-		if (openerTabId == undefined) return
-		let parentObj = tabRelationsMap.get(openerTabId)
-		if (!parentObj) tabRelationsMap.set(openerTabId, parentObj = {})
-		if (!parentObj.children) parentObj.children = new Set()
-		parentObj.children.add(id)
-		tabRelationsMap.set(id, { siblings: parentObj.children })
-	})
+browser.tabs.onCreated.addListener(tab => {
+	if (DEBUG) console.log(`tabs.onCreated ${tab.id}`)
+	doCreateTab(tab)
+	checkConsistency()
 })
+
+browser.tabs.onActivated.addListener(({ tabId, windowId }) => {
+	if (DEBUG) console.log(`tabs.onActivated ${tabId}`)
+	const windowInfo = windowInfoMap.insert(windowId)
+	if (typeof windowInfo.frozenStatus === 'number') {
+		if (tabId !== windowInfo.frozenStatus) return
+		windowInfo.frozenStatus = undefined
+	} else if (Array.isArray(windowInfo.frozenStatus)) {
+		windowInfo.frozenStatus.push(tabId)
+		return
+	}
+	doActivateTab(tabId, windowInfo)
+	checkConsistency()
+})
+
+browser.tabs.onMoved.addListener((tabId, { windowId, toIndex }) => {
+	if (DEBUG) console.log(`tabs.onMoved ${tabId}`)
+	const windowInfo = windowInfoMap.insert(windowId)
+	arrayRemoveOne(windowInfo.tabs, tabId)
+	windowInfo.tabs.splice(toIndex, 0, tabId)
+	checkConsistency()
+})
+
+browser.tabs.onAttached.addListener((tabId, { newWindowId, newPosition }) => {
+	if (DEBUG) console.log(`tabs.onAttached ${tabId}`)
+	if (tabInfoMap.has(tabId)) tabInfoMap.get(tabId).windowId = newWindowId
+	windowInfoMap.insert(newWindowId).tabs.splice(newPosition, 0, tabId)
+	checkConsistency()
+})
+
+browser.tabs.onDetached.addListener((tabId, { oldWindowId }) => {
+	if (DEBUG) console.log(`tabs.onDetached ${tabId}`)
+	doDetachTab(tabId, oldWindowId)
+	checkConsistency(true)
+})
+
+browser.tabs.onRemoved.addListener((tabId, { windowId, isWindowClosing }) => {
+	if (DEBUG) console.log(`tabs.onRemoved ${tabId}`)
+	if (!isWindowClosing) doDetachTab(tabId, windowId)
+	tabInfoMap.delete(tabId)
+	if (!isWindowClosing) checkConsistency(true)
+})
+
+browser.windows.onRemoved.addListener(windowId => {
+	windowInfoMap.delete(windowId)
+})
+
+void async function () {
+	for (const tab of await browser.tabs.query({})) doCreateTab(tab)
+	await reloadSettings()
+}()
