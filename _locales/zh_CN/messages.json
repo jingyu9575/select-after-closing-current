@@ -8,9 +8,6 @@
 	"commandOrderDescription": {
 		"message": "关闭当前标签页后，按以下顺序尝试选取："
 	},
-	"iconAttribution": {
-		"message": "扩展图标: \"Tab\"，作者 IconfactoryTeam，来自 thenounproject.com。"
-	},
 	"add": {
 		"message": "添加"
 	},
@@ -61,5 +58,11 @@
 	},
 	"actions": {
 		"message": "动作"
+	},
+	"compatibilityNote": {
+		"message": "父/同级/子标签页选项仅支持火狐 57 或更高版本。"
+	},
+	"license3rdParty": {
+		"message": "第三方版权声明（英文）"
 	}
 }

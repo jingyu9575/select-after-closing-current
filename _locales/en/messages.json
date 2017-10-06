@@ -8,9 +8,6 @@
 	"commandOrderDescription": {
 		"message": "After closing the current tab, try selecting in this order: "
 	},
-	"iconAttribution": {
-		"message": "Extension icon: \"Tab\" by IconfactoryTeam, from thenounproject.com."
-	},
 	"add": {
 		"message": "Add"
 	},
@@ -61,5 +58,11 @@
 	},
 	"actions": {
 		"message": "Actions"
+	},
+	"compatibilityNote": {
+		"message": "The parent/sibling/child tab options only work with Firefox 57 or later."
+	},
+	"license3rdParty": {
+		"message": "Third-Party Copyright Notices"
 	}
 }
