@@ -93,6 +93,11 @@ function checkConsistency(skipActive) {
 function doActivateTab(tabId, windowInfo) {
 	arrayRemoveOne(windowInfo.recent, tabId)
 	windowInfo.recent.push(tabId)
+	const tabInfo = tabInfoMap.get(tabId)
+	if (tabInfo && tabInfo.unread) {
+		if (DEBUG) console.log(`tab is read ${tabId}`)
+		tabInfo.unread = false
+	}
 }
 
 function unfreezeWindow(windowInfo, selectedId) {
@@ -131,7 +136,7 @@ const multipleRelationPredicates = {
 	child(target, { tabId }) {
 		return tabInfoMap.get(target).openerTabId === tabId
 	},
-	unread() { return false },
+	unread(target) { return tabInfoMap.get(target).unread },
 }
 
 function selectCommand(command, data /* { tabId, windowId, windowInfo } */) {
@@ -189,7 +194,7 @@ function doDetachTab(tabId, windowId) {
 
 function doCreateTab({ id, windowId, index, openerTabId }) {
 	if (tabInfoMap.has(id)) return // may be called twice on startup
-	tabInfoMap.set(id, { windowId, openerTabId })
+	tabInfoMap.set(id, { windowId, openerTabId, unread: false })
 	windowInfoMap.insert(windowId).tabs.splice(index, 0, id)
 }
 
@@ -243,6 +248,14 @@ browser.tabs.onRemoved.addListener((tabId, { windowId, isWindowClosing }) => {
 
 browser.windows.onRemoved.addListener(windowId => {
 	windowInfoMap.delete(windowId)
+})
+
+browser.tabs.onUpdated.addListener((tabId, { status }, { active }) => {
+	const tabInfo = tabInfoMap.get(tabId)
+	if (!active && status === 'complete' && tabInfo) {
+		if (DEBUG) console.log(`tab is unread ${tabId}`)
+		tabInfo.unread = true
+	}
 })
 
 void async function () {
