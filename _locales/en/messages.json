@@ -56,11 +56,14 @@
 	"relation_unread": {
 		"message": "unread tab"
 	},
+	"relation_unreadChild": {
+		"message": "unread child tab"
+	},
 	"actions": {
 		"message": "Actions"
 	},
 	"compatibilityNote": {
-		"message": "The parent/sibling/child tab options only work with Firefox 57 or later."
+		"message": "The parent, sibling, child, unread child tab options only work with Firefox 57 or later."
 	},
 	"license3rdParty": {
 		"message": "Third-Party Copyright Notices"

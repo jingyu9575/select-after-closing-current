@@ -137,6 +137,10 @@ const multipleRelationPredicates = {
 		return tabInfoMap.get(target).openerTabId === tabId
 	},
 	unread(target) { return tabInfoMap.get(target).unread },
+	unreadChild(target, { tabId }) {
+		const tabInfo = tabInfoMap.get(target)
+		return tabInfo.openerTabId === tabId && tabInfo.unread
+	},
 }
 
 function selectCommand(command, data /* { tabId, windowId, windowInfo } */) {

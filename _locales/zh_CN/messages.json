@@ -56,11 +56,14 @@
 	"relation_unread": {
 		"message": "未读标签页"
 	},
+	"relation_unreadChild": {
+		"message": "未读子标签页"
+	},
 	"actions": {
 		"message": "动作"
 	},
 	"compatibilityNote": {
-		"message": "父/同级/子标签页选项仅支持火狐 57 或更高版本。"
+		"message": "父/同级/子/未读子标签页选项仅支持火狐 57 或更高版本。"
 	},
 	"license3rdParty": {
 		"message": "第三方版权声明（英文）"
