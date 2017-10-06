@@ -11,18 +11,6 @@
 	"iconAttribution": {
 		"message": "Extension icon: \"Tab\" by IconfactoryTeam, from thenounproject.com."
 	},
-	"command_lastAccessed": {
-		"message": "Last accessed tab"
-	},
-	"command_left": {
-		"message": "Left tab"
-	},
-	"command_right": {
-		"message": "Right tab"
-	},
-	"command_opener": {
-		"message": "Opener tab (upcoming Firefox feature)"
-	},
 	"add": {
 		"message": "Add"
 	},
@@ -35,11 +23,11 @@
 	"remove": {
 		"message": "Remove"
 	},
-	"position_first": {
-		"message": "First"
-	},
 	"position": {
 		"message": "Position"
+	},
+	"position_first": {
+		"message": "First"
 	},
 	"position_left": {
 		"message": "Left"

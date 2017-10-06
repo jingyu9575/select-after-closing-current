@@ -11,16 +11,55 @@
 	"iconAttribution": {
 		"message": "扩展图标: \"Tab\"，作者 IconfactoryTeam，来自 thenounproject.com。"
 	},
-	"command_lastAccessed": {
+	"add": {
+		"message": "添加"
+	},
+	"up": {
+		"message": "上移"
+	},
+	"down": {
+		"message": "下移"
+	},
+	"remove": {
+		"message": "删除"
+	},
+	"position": {
+		"message": "位置"
+	},
+	"position_first": {
+		"message": "第一个"
+	},
+	"position_left": {
+		"message": "左侧"
+	},
+	"position_right": {
+		"message": "右侧"
+	},
+	"position_last": {
+		"message": "最后一个"
+	},
+	"relation": {
+		"message": "关系"
+	},
+	"relation_none": {
+		"message": "标签页"
+	},
+	"relation_lastAccessed": {
 		"message": "最近访问标签页"
 	},
-	"command_left": {
-		"message": "左侧标签页"
+	"relation_parent": {
+		"message": "父标签页"
 	},
-	"command_right": {
-		"message": "右侧标签页"
+	"relation_sibling": {
+		"message": "同级标签页"
 	},
-	"command_opener": {
-		"message": "父标签页（即将到来的 Firefox 功能）"
+	"relation_child": {
+		"message": "子标签页"
+	},
+	"relation_unread": {
+		"message": "未读标签页"
+	},
+	"actions": {
+		"message": "动作"
 	}
 }
