@@ -65,6 +65,9 @@
 	"compatibilityNote": {
 		"message": "The parent, sibling, child, unread child tab options only work with Firefox 57 or later."
 	},
+	"bug1366290Mitigation": {
+		"message": "If your browser are affected by Firefox's Bug 1366290 (version 56 or earlier), check this to mitigate it"
+	},
 	"license3rdParty": {
 		"message": "Third-Party Copyright Notices"
 	}

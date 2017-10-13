@@ -3,6 +3,7 @@ for (const element of document.querySelectorAll('[data-i18n]'))
 
 const commandTemplate = document.getElementById("commandTemplate")
 const commandOrderDiv = document.getElementById("commandOrder")
+const bug1366290MitigationInput = document.getElementById("bug1366290MitigationInput")
 
 function updateSingleRelationStyle(command) {
 	const relationSelect = command.querySelector('.relationSelect')
@@ -65,6 +66,7 @@ async function reloadSettings() {
 			select.value = obj[select.dataset['key']]
 		updateSingleRelationStyle(command)
 	}
+	bug1366290MitigationInput.checked = !!settings.bug1366290Mitigation
 }
 
 async function saveSettings() {
@@ -75,9 +77,12 @@ async function saveSettings() {
 			obj[select.dataset['key']] = select.value
 		settings.commandOrder.push(obj)
 	}
+	settings.bug1366290Mitigation = !!bug1366290MitigationInput.checked
 	await browser.storage.local.set(settings)
 	await browser.runtime.sendMessage({ type: 'reloadSettings' })
 }
+
+bug1366290MitigationInput.addEventListener('change', saveSettings)
 
 void async function () {
 	await reloadSettings()

@@ -62,3 +62,7 @@
 #add label {
 	margin-left: 0.5em;
 }
+
+.middle-aligned > * {
+	vertical-align: middle;
+}

@@ -65,6 +65,9 @@
 	"compatibilityNote": {
 		"message": "父/同级/子/未读子标签页选项仅支持火狐 57 或更高版本。"
 	},
+	"bug1366290Mitigation": {
+		"message": "如果浏览器受到火狐 Bug 1366290 的影响（56 或更低版本）, 选中此项来减轻影响"
+	},
 	"license3rdParty": {
 		"message": "第三方版权声明（英文）"
 	}

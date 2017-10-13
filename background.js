@@ -208,8 +208,7 @@ browser.tabs.onCreated.addListener(tab => {
 	checkConsistency()
 })
 
-browser.tabs.onActivated.addListener(({ tabId, windowId }) => {
-	if (DEBUG) console.log(`tabs.onActivated ${tabId}`)
+function onActivated(tabId, windowId) {
 	const windowInfo = windowInfoMap.insert(windowId)
 	if (typeof windowInfo.frozenStatus === 'number') {
 		if (tabId !== windowInfo.frozenStatus) return
@@ -220,6 +219,16 @@ browser.tabs.onActivated.addListener(({ tabId, windowId }) => {
 	}
 	doActivateTab(tabId, windowInfo)
 	checkConsistency()
+}
+
+browser.tabs.onActivated.addListener(({ tabId, windowId }) => {
+	if (DEBUG) console.log(`tabs.onActivated ${tabId}`)
+	if (globalSettings.bug1366290Mitigation) {
+		browser.tabs.query({ active: true, windowId: windowId }).then(() => {
+			if (DEBUG) console.log(`bug1366290 mitigation ${tabId}`)
+			onActivated(tabId, windowId)
+		})
+	} else onActivated(tabId, windowId)
 })
 
 browser.tabs.onMoved.addListener((tabId, { windowId, toIndex }) => {
