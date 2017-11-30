@@ -4,6 +4,7 @@ for (const element of document.querySelectorAll('[data-i18n]'))
 const commandTemplate = document.getElementById("commandTemplate")
 const commandOrderDiv = document.getElementById("commandOrder")
 const bug1366290MitigationInput = document.getElementById("bug1366290MitigationInput")
+const disableFromNewTabInput = document.getElementById("disableFromNewTabInput")
 
 function updateSingleRelationStyle(command) {
 	const relationSelect = command.querySelector('.relationSelect')
@@ -67,6 +68,7 @@ async function reloadSettings() {
 		updateSingleRelationStyle(command)
 	}
 	bug1366290MitigationInput.checked = !!settings.bug1366290Mitigation
+	disableFromNewTabInput.checked = !!settings.disableFromNewTab
 }
 
 async function saveSettings() {
@@ -78,11 +80,13 @@ async function saveSettings() {
 		settings.commandOrder.push(obj)
 	}
 	settings.bug1366290Mitigation = !!bug1366290MitigationInput.checked
+	settings.disableFromNewTab = !!disableFromNewTabInput.checked
 	await browser.storage.local.set(settings)
 	await browser.runtime.sendMessage({ type: 'reloadSettings' })
 }
 
 bug1366290MitigationInput.addEventListener('change', saveSettings)
+disableFromNewTabInput.addEventListener('change', saveSettings)
 
 void async function () {
 	await reloadSettings()

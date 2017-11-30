@@ -68,6 +68,9 @@
 	"bug1366290Mitigation": {
 		"message": "If your browser are affected by Firefox's Bug 1366290 (version 56 or earlier), check this to mitigate it"
 	},
+	"disableFromNewTab": {
+		"message": "Disable if the closed tab is a newly created about:newtab"
+	},
 	"license3rdParty": {
 		"message": "Third-Party Copyright Notices"
 	}

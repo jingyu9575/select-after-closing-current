@@ -64,6 +64,7 @@ const tabInfoMap = new Map()
 const windowInfoMap = new InsertableMap(() => ({
 	tabs: [], recent: [],
 	frozenStatus: undefined /* as undefined | number | number[] */,
+	newTabStatus: undefined /* as undefined | {tabId: number} */,
 }))
 
 function checkConsistency(skipActive) {
@@ -171,7 +172,9 @@ function doDetachTab(tabId, windowId) {
 		tabId === windowInfo.frozenStatus)
 		windowInfo.frozenStatus = undefined
 	if (tabId === windowInfo.recent[windowInfo.recent.length - 1] &&
-		!Array.isArray(windowInfo.frozenStatus)) {
+		!Array.isArray(windowInfo.frozenStatus) &&
+		!(globalSettings.disableFromNewTab &&
+			windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId)) {
 		for (const command of globalSettings.commandOrder) {
 			let selectedId
 			try {
@@ -204,12 +207,16 @@ function doCreateTab({ id, windowId, index, openerTabId }) {
 
 browser.tabs.onCreated.addListener(tab => {
 	if (DEBUG) console.log(`tabs.onCreated ${tab.id}`)
+	if (tab.active && tab.url === 'about:newtab')
+		windowInfoMap.insert(tab.windowId).newTabStatus = { tabId: tab.id }
 	doCreateTab(tab)
 	checkConsistency()
 })
 
 function onActivated(tabId, windowId) {
 	const windowInfo = windowInfoMap.insert(windowId)
+	if (windowInfo.newTabStatus && windowInfo.newTabStatus.tabId !== tabId)
+		windowInfo.newTabStatus = undefined
 	if (typeof windowInfo.frozenStatus === 'number') {
 		if (tabId !== windowInfo.frozenStatus) return
 		windowInfo.frozenStatus = undefined
@@ -263,7 +270,10 @@ browser.windows.onRemoved.addListener(windowId => {
 	windowInfoMap.delete(windowId)
 })
 
-browser.tabs.onUpdated.addListener((tabId, { status }, { active }) => {
+browser.tabs.onUpdated.addListener((tabId, { status, url }, { active, windowId }) => {
+	const windowInfo = windowInfoMap.insert(windowId)
+	if (url && windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId)
+		windowInfo.newTabStatus = undefined
 	const tabInfo = tabInfoMap.get(tabId)
 	if (!active && status === 'complete' && tabInfo) {
 		if (DEBUG) console.log(`tab is unread ${tabId}`)
