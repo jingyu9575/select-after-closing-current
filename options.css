@@ -6,7 +6,7 @@
 
 #commandOrder {
 	display: grid;
-	grid-template-columns: repeat(5, auto);
+	grid-template-columns: repeat(6, auto);
 	grid-row-gap: 4px;
 	align-items: center;
 	margin: 6px 0;
@@ -41,7 +41,7 @@
 }
 
 .command button:last-of-type {
-	margin-right: 4px;
+	margin-right: 12px;
 }
 
 .command button img, #add img {

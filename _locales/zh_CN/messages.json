@@ -62,6 +62,15 @@
 	"actions": {
 		"message": "动作"
 	},
+	"closeShortcut": {
+		"message": "关闭当前页的快捷键"
+	},
+	"closeShortcut_undefined": {
+		"message": "无"
+	},
+	"closeShortcut_1": {
+		"message": "Ctrl+Shift+F4"
+	},
 	"compatibilityNote": {
 		"message": "父/同级/子/未读子标签页选项仅支持火狐 57 或更高版本。"
 	},

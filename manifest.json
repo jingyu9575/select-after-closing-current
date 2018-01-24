@@ -23,5 +23,13 @@
 	"options_ui": {
 		"page": "options.html"
 	},
-	"default_locale": "en"
+	"default_locale": "en",
+	"commands": {
+		"close-1": {
+			"suggested_key": {
+				"default": "Ctrl+Shift+F4"
+			},
+			"description": "Close the current tab (alternatively)"
+		}
+	}
 }

@@ -1,6 +1,7 @@
 const DEBUG = false
 
 let globalSettings = { commandOrder: [] }
+let currentCloseShortcut = undefined
 
 async function reloadSettings() {
 	const settings = await browser.storage.local.get()
@@ -176,6 +177,9 @@ function doDetachTab(tabId, windowId) {
 		!(globalSettings.disableFromNewTab &&
 			windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId)) {
 		for (const command of globalSettings.commandOrder) {
+			if (currentCloseShortcut && tabId === currentCloseShortcut.tabId
+				&& command.closeShortcut !== currentCloseShortcut.shortcutId)
+				continue
 			let selectedId
 			try {
 				selectedId = selectCommand(command,
@@ -194,6 +198,7 @@ function doDetachTab(tabId, windowId) {
 				break
 			}
 		}
+		currentCloseShortcut = undefined
 	}
 	arrayRemoveOne(windowInfo.tabs, tabId)
 	arrayRemoveOne(windowInfo.recent, tabId)
@@ -278,6 +283,19 @@ browser.tabs.onUpdated.addListener((tabId, { status, url }, { active, windowId }
 	if (!active && status === 'complete' && tabInfo) {
 		if (DEBUG) console.log(`tab is unread ${tabId}`)
 		tabInfo.unread = true
+	}
+})
+
+browser.commands.onCommand.addListener(async command => {
+	const match = /^close-(\d+)$/.exec(command)
+	if (match) {
+		const shortcutId = match[1]
+		if (!globalSettings.commandOrder.some(v => v.closeShortcut === shortcutId))
+			return
+		const [tab] = await browser.tabs.query({ currentWindow: true, active: true })
+		if (!tab) return
+		currentCloseShortcut = { tabId: tab.id, shortcutId }
+		await browser.tabs.remove(tab.id)
 	}
 })
 
