@@ -63,7 +63,7 @@
 		"message": "Actions"
 	},
 	"closeShortcut": {
-		"message": "Shortcut to close the tab"
+		"message": "Shortcut to close the current tab"
 	},
 	"closeShortcut_undefined": {
 		"message": "None"
