@@ -1,7 +1,6 @@
-const DEBUG = false
+let DEBUG = false
 
 let globalSettings = { commandOrder: [] }
-let currentCloseShortcut = undefined
 
 async function reloadSettings() {
 	const settings = await browser.storage.local.get()
@@ -167,6 +166,22 @@ function selectCommand(command, data /* { tabId, windowId, windowInfo } */) {
 	return undefined
 }
 
+const ignoredClose = new Set()
+
+function resolveSelection({ tabId, windowId, windowInfo, shortcutId }) {
+	if (ignoredClose.delete(tabId)) return undefined
+	for (const command of globalSettings.commandOrder) {
+		if (shortcutId && command.closeShortcut !== shortcutId)
+			continue
+		try {
+			const selectedId = selectCommand(command,
+				{ tabId, windowId, windowInfo })
+			if (selectedId !== undefined) return selectedId
+		} catch (err) { console.error(err) }
+	}
+	return undefined
+}
+
 function doDetachTab(tabId, windowId) {
 	const windowInfo = windowInfoMap.insert(windowId)
 	if (typeof windowInfo.frozenStatus === 'number' &&
@@ -176,29 +191,18 @@ function doDetachTab(tabId, windowId) {
 		!Array.isArray(windowInfo.frozenStatus) &&
 		!(globalSettings.disableFromNewTab &&
 			windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId)) {
-		for (const command of globalSettings.commandOrder) {
-			if (currentCloseShortcut && tabId === currentCloseShortcut.tabId
-				&& command.closeShortcut !== currentCloseShortcut.shortcutId)
-				continue
-			let selectedId
-			try {
-				selectedId = selectCommand(command,
-					{ tabId, windowId, windowInfo })
-			} catch (err) { console.error(err) }
-			if (selectedId !== undefined) {
-				if (DEBUG) console.log(`selected ${selectedId}`)
-				windowInfo.frozenStatus = []
-				browser.tabs.update(selectedId, { active: true }).then(
-					() => unfreezeWindow(windowInfo, selectedId),
-					err => {
-						console.error(err)
-						unfreezeWindow(windowInfo, undefined)
-					}
-				)
-				break
-			}
+		const selectedId = resolveSelection({ tabId, windowId, windowInfo })
+		if (selectedId !== undefined) {
+			if (DEBUG) console.log(`selected ${selectedId}`)
+			windowInfo.frozenStatus = []
+			browser.tabs.update(selectedId, { active: true }).then(
+				() => unfreezeWindow(windowInfo, selectedId),
+				err => {
+					console.error(err)
+					unfreezeWindow(windowInfo, undefined)
+				}
+			)
 		}
-		currentCloseShortcut = undefined
 	}
 	arrayRemoveOne(windowInfo.tabs, tabId)
 	arrayRemoveOne(windowInfo.recent, tabId)
@@ -294,8 +298,14 @@ browser.commands.onCommand.addListener(async command => {
 			return
 		const [tab] = await browser.tabs.query({ currentWindow: true, active: true })
 		if (!tab) return
-		currentCloseShortcut = { tabId: tab.id, shortcutId }
-		await browser.tabs.remove(tab.id)
+		const { windowId } = tab
+		const windowInfo = windowInfoMap.insert(windowId)
+		const selectedId = resolveSelection(
+			{ tabId: tab.id, windowId, windowInfo, shortcutId })
+		if (selectedId !== undefined)
+			void browser.tabs.update(selectedId, { active: true })
+		ignoredClose.add(tab.id)
+		void browser.tabs.remove(tab.id)
 	}
 })
 

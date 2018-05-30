@@ -1,13 +1,13 @@
 #commandOrderSection {
 	display: flex;
 	flex-direction: column;
-	align-items: left;
+	align-items: start;
 }
 
 #commandOrder {
 	display: grid;
 	grid-template-columns: repeat(6, auto);
-	grid-row-gap: 4px;
+	row-gap: 4px;
 	align-items: center;
 	margin: 6px 0;
 }
@@ -25,7 +25,7 @@
 }
 
 #actionsHeader {
-	grid-column: 3 / span 3;
+	grid-column: auto / span 3;
 }
 
 .command button {
@@ -36,14 +36,6 @@
 	justify-content: center;
 }
 
-.command button:first-of-type {
-	margin-left: 4px;
-}
-
-.command button:last-of-type {
-	margin-right: 12px;
-}
-
 .command button img, #add img {
 	height: 1.2em;
 	width: 1.2em;
@@ -51,6 +43,10 @@
 
 .command.singleRelation .positionSelect {
 	opacity: 0.4;
+}
+
+.gap-left {
+	margin-left: 12px;
 }
 
 #add {

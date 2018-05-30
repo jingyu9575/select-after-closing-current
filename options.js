@@ -91,4 +91,7 @@ disableFromNewTabInput.addEventListener('change', saveSettings)
 void async function () {
 	await reloadSettings()
 	document.getElementById('add').disabled = false
+
+	document.getElementById('shortcuts-customize-ui')
+		.appendChild(await ShortcutCustomizeUI.build())
 }()

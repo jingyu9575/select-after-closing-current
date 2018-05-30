@@ -69,7 +69,19 @@
 		"message": "无"
 	},
 	"closeShortcut_1": {
-		"message": "Ctrl+Shift+F4"
+		"message": "快捷键 1"
+	},
+	"closeShortcut_2": {
+		"message": "快捷键 2"
+	},
+	"closeShortcut_3": {
+		"message": "快捷键 3"
+	},
+	"closeShortcut_4": {
+		"message": "快捷键 4"
+	},
+	"closeShortcut_5": {
+		"message": "快捷键 5"
 	},
 	"compatibilityNote": {
 		"message": "父/同级/子/未读子标签页选项仅支持火狐 57 或更高版本。"

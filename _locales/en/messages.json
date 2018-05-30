@@ -69,7 +69,19 @@
 		"message": "None"
 	},
 	"closeShortcut_1": {
-		"message": "Ctrl+Shift+F4"
+		"message": "Shortcut 1"
+	},
+	"closeShortcut_2": {
+		"message": "Shortcut 2"
+	},
+	"closeShortcut_3": {
+		"message": "Shortcut 3"
+	},
+	"closeShortcut_4": {
+		"message": "Shortcut 4"
+	},
+	"closeShortcut_5": {
+		"message": "Shortcut 5"
 	},
 	"compatibilityNote": {
 		"message": "The parent, sibling, child, unread child tab options only work with Firefox 57 or later."

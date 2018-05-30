@@ -25,11 +25,10 @@
 	},
 	"default_locale": "en",
 	"commands": {
-		"close-1": {
-			"suggested_key": {
-				"default": "Ctrl+Shift+F4"
-			},
-			"description": "Close the current tab (alternatively)"
-		}
+		"close-1": {"description": "__MSG_closeShortcut_1__"},
+		"close-2": {"description": "__MSG_closeShortcut_2__"},
+		"close-3": {"description": "__MSG_closeShortcut_3__"},
+		"close-4": {"description": "__MSG_closeShortcut_4__"},
+		"close-5": {"description": "__MSG_closeShortcut_5__"}
 	}
 }
