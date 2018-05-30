@@ -92,6 +92,9 @@ void async function () {
 	await reloadSettings()
 	document.getElementById('add').disabled = false
 
-	document.getElementById('shortcuts-customize-ui')
-		.appendChild(await ShortcutCustomizeUI.build())
+	if (ShortcutCustomizeUI.available) {
+		document.getElementById('shortcuts-customize-ui')
+			.appendChild(await ShortcutCustomizeUI.build())
+	} else
+		document.documentElement.classList.add('no-shortcut-support')
 }()

@@ -94,5 +94,8 @@
 	},
 	"license3rdParty": {
 		"message": "第三方版权声明（英文）"
+	},
+	"shortcutCompatibilityNote": {
+		"message": "更新到火狐 60 或更高版本以启用快捷键功能。"
 	}
 }

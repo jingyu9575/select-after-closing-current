@@ -94,5 +94,8 @@
 	},
 	"license3rdParty": {
 		"message": "Third-Party Copyright Notices"
+	},
+	"shortcutCompatibilityNote": {
+		"message": "Update to Firefox 60 or later for shortcut support."
 	}
 }

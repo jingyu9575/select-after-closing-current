@@ -15,7 +15,7 @@
 			<div id="commandOrderHeader">
 				<span data-i18n="position"></span>
 				<span data-i18n="relation"></span>
-				<span class="gap-left" data-i18n="closeShortcut"></span>
+				<span class="gap-left shortcut-support" data-i18n="closeShortcut"></span>
 				<span id="actionsHeader" class="gap-left" data-i18n="actions"></span>
 			</div>
 		</div>
@@ -37,7 +37,8 @@
 			<span data-i18n='disableFromNewTab'></span>
 		</label>
 	</div>
-	<div id='shortcuts-customize-ui'></div>
+	<div id='shortcuts-customize-ui' class="shortcut-support"></div>
+	<p id="shortcutCompatibilityNote" data-i18n="shortcutCompatibilityNote"></p>
 	<p>
 		<a target="_blank" href="LICENSE-3RD-PARTY.txt" data-i18n="license3rdParty"></a>
 	</p>
@@ -57,7 +58,7 @@
 			<option value="unread"></option>
 			<option value="unreadChild"></option>
 		</select>
-		<select class="closeShortcutSelect gap-left" data-key="closeShortcut">
+		<select class="closeShortcutSelect gap-left shortcut-support" data-key="closeShortcut">
 			<option value="undefined" selected></option>
 			<option value="1"></option>
 			<option value="2"></option>

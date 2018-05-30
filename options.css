@@ -12,6 +12,10 @@
 	margin: 6px 0;
 }
 
+:root.no-shortcut-support #commandOrder {
+	grid-template-columns: repeat(5, auto);
+}
+
 #commandOrder:not(.hasCommand) #commandOrderHeader {
 	display: none;
 }
@@ -61,4 +65,12 @@
 
 .middle-aligned > * {
 	vertical-align: middle;
+}
+
+:root.no-shortcut-support .shortcut-support {
+	display: none !important;
+}
+
+:root:not(.no-shortcut-support) #shortcutCompatibilityNote {
+	display: none;
 }
