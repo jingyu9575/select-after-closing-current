@@ -97,5 +97,11 @@
 	},
 	"shortcutCompatibilityNote": {
 		"message": "更新到火狐 60 或更高版本以启用快捷键功能。"
+	},
+	"shortcuts": {
+		"message": "快捷键: "
+	},
+	"shortcutDescription": {
+		"message": "用这些快捷键关闭当前页时，只会使用选取顺序中设为同一快捷键的项目。"
 	}
 }

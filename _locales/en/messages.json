@@ -97,5 +97,11 @@
 	},
 	"shortcutCompatibilityNote": {
 		"message": "Update to Firefox 60 or later for shortcut support."
+	},
+	"shortcuts": {
+		"message": "Shortcuts: "
+	},
+	"shortcutDescription": {
+		"message": "When using these shortcuts to close the current tab, only the corresponding items in the selection order are considered."
 	}
 }
