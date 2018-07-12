@@ -57,7 +57,8 @@ class InsertableMap extends Map {
 
 function arrayRemoveOne(arr, item) {
 	const i = arr.indexOf(item)
-	if (i > -1) arr.splice(i, 1)
+	if (i > -1) { arr.splice(i, 1); return true }
+	return false
 }
 
 const tabInfoMap = new Map()
@@ -250,7 +251,7 @@ browser.tabs.onActivated.addListener(({ tabId, windowId }) => {
 browser.tabs.onMoved.addListener((tabId, { windowId, toIndex }) => {
 	if (DEBUG) console.log(`tabs.onMoved ${tabId}`)
 	const windowInfo = windowInfoMap.insert(windowId)
-	arrayRemoveOne(windowInfo.tabs, tabId)
+	if (!arrayRemoveOne(windowInfo.tabs, tabId)) return
 	windowInfo.tabs.splice(toIndex, 0, tabId)
 	checkConsistency()
 })
