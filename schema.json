@@ -1,0 +1,24 @@
+[
+	{
+		"namespace": "selectAfterClosingCurrent",
+		"functions": [
+			{
+				"name": "setTabToBlurTo",
+				"type": "function",
+				"async": true,
+				"parameters": [
+					{
+						"name": "windowId",
+						"type": "number",
+						"minimum": -2
+					},
+					{
+						"name": "tabId",
+						"type": "number",
+						"minimum": -1
+					}
+				]
+			}
+		]
+	}
+]
