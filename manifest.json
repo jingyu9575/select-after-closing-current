@@ -7,7 +7,7 @@
 		}
 	},
 	"name": "__MSG_extensionName__",
-	"version": "4.0exp",
+	"version": "4.0.1exp",
 	"description": "__MSG_extensionDescription__",
 	"icons": {
 		"48": "icons/icon.svg"
