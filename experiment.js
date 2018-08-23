@@ -6,6 +6,7 @@ this.selectAfterClosingCurrent = class extends ExtensionAPI {
 			if ('selectAfterClosingCurrent_tabToBlurTo' in gBrowser) return
 			const { _findTabToBlurTo } = gBrowser
 			gBrowser._findTabToBlurTo = function (tab) {
+				if (!tab.selected) return null
 				const id = this.selectAfterClosingCurrent_tabToBlurTo
 				if (id != undefined && id >= 0) {
 					try {
