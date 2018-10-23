@@ -41,21 +41,5 @@
 		"close-5": {
 			"description": "__MSG_closeShortcut_5__"
 		}
-	},
-	"experiment_apis": {
-		"selectAfterClosingCurrent": {
-			"schema": "schema.json",
-			"parent": {
-				"scopes": [
-					"addon_parent"
-				],
-				"paths": [
-					[
-						"selectAfterClosingCurrent"
-					]
-				],
-				"script": "experiment.js"
-			}
-		}
 	}
 }

@@ -328,14 +328,14 @@ browser.commands.onCommand.addListener(async command => {
 })
 
 function preloadWindow(windowId) {
-	if (!browser.selectAfterClosingCurrent) return
+	if (!browser.tabs.moveInSuccession) return
 	const windowInfo = windowInfoMap.insert(windowId)
 	const tabId = windowInfo.recent[windowInfo.recent.length - 1]
 	if (tabId === undefined) return
-	const selectedId = resolveSelection({ tabId, windowId, windowInfo })
-	if (selectedId === undefined) return
-	if (DEBUG) console.log(`preloadWindow ${windowId} ${selectedId}`)
-	void browser.selectAfterClosingCurrent.setTabToBlurTo(windowId, selectedId)
+	const successorTabId = resolveSelection({ tabId, windowId, windowInfo })
+	if (successorTabId === undefined) return
+	if (DEBUG) console.log(`preloadWindow ${windowId} ${successorTabId}`)
+	void browser.tabs.update(tabId, { successorTabId })
 }
 
 void async function () {
