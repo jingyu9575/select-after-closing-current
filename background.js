@@ -197,10 +197,14 @@ function doDetachTab(tabId, windowId) {
 			if (DEBUG) console.log(`selected ${selectedId}`)
 			windowInfo.frozenStatus = []
 			browser.tabs.update(selectedId, { active: true }).then(
-				() => unfreezeWindow(windowInfo, selectedId),
+				() => {
+					unfreezeWindow(windowInfo, selectedId)
+					preloadWindow(windowId)
+				},
 				err => {
 					console.error(err)
 					unfreezeWindow(windowInfo, undefined)
+					preloadWindow(windowId)
 				}
 			)
 		}
@@ -221,6 +225,7 @@ browser.tabs.onCreated.addListener(tab => {
 		windowInfoMap.insert(tab.windowId).newTabStatus = { tabId: tab.id }
 	doCreateTab(tab)
 	checkConsistency()
+	preloadWindow(tab.windowId)
 })
 
 function onActivated(tabId, windowId) {
@@ -246,6 +251,7 @@ browser.tabs.onActivated.addListener(({ tabId, windowId }) => {
 			onActivated(tabId, windowId)
 		})
 	} else onActivated(tabId, windowId)
+	preloadWindow(windowId)
 })
 
 browser.tabs.onMoved.addListener((tabId, { windowId, toIndex }) => {
@@ -254,6 +260,7 @@ browser.tabs.onMoved.addListener((tabId, { windowId, toIndex }) => {
 	if (!arrayRemoveOne(windowInfo.tabs, tabId)) return
 	windowInfo.tabs.splice(toIndex, 0, tabId)
 	checkConsistency()
+	preloadWindow(windowId)
 })
 
 browser.tabs.onAttached.addListener((tabId, { newWindowId, newPosition }) => {
@@ -261,19 +268,24 @@ browser.tabs.onAttached.addListener((tabId, { newWindowId, newPosition }) => {
 	if (tabInfoMap.has(tabId)) tabInfoMap.get(tabId).windowId = newWindowId
 	windowInfoMap.insert(newWindowId).tabs.splice(newPosition, 0, tabId)
 	checkConsistency()
+	preloadWindow(newWindowId)
 })
 
 browser.tabs.onDetached.addListener((tabId, { oldWindowId }) => {
 	if (DEBUG) console.log(`tabs.onDetached ${tabId}`)
 	doDetachTab(tabId, oldWindowId)
 	checkConsistency(true)
+	preloadWindow(oldWindowId)
 })
 
 browser.tabs.onRemoved.addListener((tabId, { windowId, isWindowClosing }) => {
 	if (DEBUG) console.log(`tabs.onRemoved ${tabId}`)
 	if (!isWindowClosing) doDetachTab(tabId, windowId)
 	tabInfoMap.delete(tabId)
-	if (!isWindowClosing) checkConsistency(true)
+	if (!isWindowClosing) {
+		checkConsistency(true)
+		preloadWindow(windowId)
+	}
 })
 
 browser.windows.onRemoved.addListener(windowId => {
@@ -282,13 +294,18 @@ browser.windows.onRemoved.addListener(windowId => {
 
 browser.tabs.onUpdated.addListener((tabId, { status, url }, { active, windowId }) => {
 	const windowInfo = windowInfoMap.insert(windowId)
-	if (url && windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId)
+	let changed = false
+	if (url && windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId) {
 		windowInfo.newTabStatus = undefined
+		changed = true
+	}
 	const tabInfo = tabInfoMap.get(tabId)
 	if (!active && status === 'complete' && tabInfo) {
 		if (DEBUG) console.log(`tab is unread ${tabId}`)
 		tabInfo.unread = true
+		changed = true
 	}
+	if (changed) preloadWindow(windowId)
 })
 
 browser.commands.onCommand.addListener(async command => {
@@ -310,7 +327,19 @@ browser.commands.onCommand.addListener(async command => {
 	}
 })
 
+function preloadWindow(windowId) {
+	if (!browser.selectAfterClosingCurrent) return
+	const windowInfo = windowInfoMap.insert(windowId)
+	const tabId = windowInfo.recent[windowInfo.recent.length - 1]
+	if (tabId === undefined) return
+	const selectedId = resolveSelection({ tabId, windowId, windowInfo })
+	if (selectedId === undefined) return
+	if (DEBUG) console.log(`preloadWindow ${windowId} ${selectedId}`)
+	void browser.selectAfterClosingCurrent.setTabToBlurTo(windowId, selectedId)
+}
+
 void async function () {
 	for (const tab of await browser.tabs.query({})) doCreateTab(tab)
 	await reloadSettings()
+	for (const { id } of await browser.windows.getAll()) preloadWindow(id)
 }()
