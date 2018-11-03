@@ -349,7 +349,7 @@ browser.commands.onCommand.addListener(async command => {
 })
 
 function preloadWindow(windowId) {
-	if (!browser.tabs.moveInSuccession) return
+	if (!('moveInSuccession' in browser.tabs)) return
 	const windowInfo = windowInfoMap.insert(windowId)
 	const tabId = windowInfo.recent[windowInfo.recent.length - 1]
 	if (tabId === undefined) return
