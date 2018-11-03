@@ -44,7 +44,7 @@ function addCommand() {
 			!!commandOrderDiv.querySelector(".command"))
 	})
 
-	for (const select of command.querySelectorAll('select'))
+	for (const select of command.querySelectorAll('select, input[type=checkbox]'))
 		select.addEventListener('change', saveSettings)
 	for (const button of command.querySelectorAll('button'))
 		button.addEventListener('click', saveSettings)
@@ -57,14 +57,15 @@ document.getElementById('add').addEventListener('click',
 let settings = {}
 
 async function reloadSettings() {
-	settings = await browser.runtime.sendMessage(
-		{ type: 'reloadSettings' })
+	settings = await browser.runtime.sendMessage({ type: 'reloadSettings' })
 	for (const command of commandOrderDiv.querySelectorAll('.command'))
 		command.remove()
 	for (const obj of settings.commandOrder) {
 		const command = addCommand()
 		for (const select of command.querySelectorAll('select'))
 			select.value = obj[select.dataset['key']]
+		for (const select of command.querySelectorAll('input[type=checkbox]'))
+			select.checked = !!obj[select.dataset['key']]
 		updateSingleRelationStyle(command)
 	}
 	bug1366290MitigationInput.checked = !!settings.bug1366290Mitigation
@@ -77,6 +78,8 @@ async function saveSettings() {
 		const obj = {}
 		for (const select of command.querySelectorAll('select'))
 			obj[select.dataset['key']] = select.value
+		for (const select of command.querySelectorAll('input[type=checkbox]'))
+			obj[select.dataset['key']] = select.checked
 		settings.commandOrder.push(obj)
 	}
 	settings.bug1366290Mitigation = !!bug1366290MitigationInput.checked

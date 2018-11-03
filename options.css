@@ -12,14 +12,14 @@ section > h2 {
 
 #commandOrder {
 	display: grid;
-	grid-template-columns: repeat(6, auto);
+	grid-template-columns: repeat(7, auto);
 	row-gap: 4px;
 	align-items: center;
 	margin: 6px 0;
 }
 
 :root.no-shortcut-support #commandOrder {
-	grid-template-columns: repeat(5, auto);
+	grid-template-columns: repeat(6, auto);
 }
 
 #commandOrder:not(.hasCommand) #commandOrderHeader {

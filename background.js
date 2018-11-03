@@ -116,15 +116,17 @@ function unfreezeWindow(windowInfo, selectedId) {
 }
 
 const singleRelationMethods = {
-	lastAccessed({ tabId, windowInfo }) {
-		const last = windowInfo.recent[windowInfo.recent.length - 1]
-		return last !== tabId ? last :
-			windowInfo.recent[windowInfo.recent.length - 2]
+	*lastAccessed({ tabId, windowInfo }) {
+		for (let i = windowInfo.recent.length; i-- > 0;) {
+			const value = windowInfo.recent[i]
+			if (value !== tabId) yield value
+		}
 	},
-	parent({ tabId, windowId }) {
+	*parent({ tabId, windowId }) {
 		const result = tabInfoMap.get(tabId).openerTabId
-		return result != undefined && tabInfoMap.has(result) &&
-			tabInfoMap.get(result).windowId === windowId ? result : undefined
+		if (result != undefined && tabInfoMap.has(result) &&
+			tabInfoMap.get(result).windowId === windowId)
+			yield result
 	},
 }
 
@@ -145,9 +147,18 @@ const multipleRelationPredicates = {
 	},
 }
 
+function isSelectionAllowed(command, selectedId) {
+	return !command.skipHidden
+		|| (tabInfoMap.has(selectedId) && !tabInfoMap.get(selectedId).hidden)
+}
+
 function selectCommand(command, data /* { tabId, windowId, windowInfo } */) {
-	if (command.relation in singleRelationMethods)
-		return singleRelationMethods[command.relation](data)
+	if (command.relation in singleRelationMethods) {
+		for (const selectedId of singleRelationMethods[command.relation](data))
+			if (isSelectionAllowed(command, selectedId))
+				return selectedId
+		return undefined
+	}
 	if (command.relation in multipleRelationPredicates) {
 		const { tabs } = data.windowInfo
 		const index = ['left', 'right'].includes(command.position) ?
@@ -161,7 +172,8 @@ function selectCommand(command, data /* { tabId, windowId, windowInfo } */) {
 		}[command.position]
 		const predicate = multipleRelationPredicates[command.relation]
 		for (let i = begin; i !== end; i += step)
-			if (tabs[i] !== data.tabId && predicate(tabs[i], data))
+			if (tabs[i] !== data.tabId && predicate(tabs[i], data)
+				&& isSelectionAllowed(command, tabs[i]))
 				return tabs[i]
 	}
 	return undefined
@@ -213,9 +225,9 @@ function doDetachTab(tabId, windowId) {
 	arrayRemoveOne(windowInfo.recent, tabId)
 }
 
-function doCreateTab({ id, windowId, index, openerTabId }) {
+function doCreateTab({ id, windowId, index, openerTabId, hidden }) {
 	if (tabInfoMap.has(id)) return // may be called twice on startup
-	tabInfoMap.set(id, { windowId, openerTabId, unread: false })
+	tabInfoMap.set(id, { windowId, openerTabId, unread: false, hidden })
 	windowInfoMap.insert(windowId).tabs.splice(index, 0, id)
 }
 
@@ -292,7 +304,7 @@ browser.windows.onRemoved.addListener(windowId => {
 	windowInfoMap.delete(windowId)
 })
 
-browser.tabs.onUpdated.addListener((tabId, { status, url }, { active, windowId }) => {
+browser.tabs.onUpdated.addListener((tabId, { status, url, hidden }, { active, windowId }) => {
 	const windowInfo = windowInfoMap.insert(windowId)
 	let changed = false
 	if (url && windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId) {
@@ -303,6 +315,11 @@ browser.tabs.onUpdated.addListener((tabId, { status, url }, { active, windowId }
 	if (!active && status === 'complete' && tabInfo) {
 		if (DEBUG) console.log(`tab is unread ${tabId}`)
 		tabInfo.unread = true
+		changed = true
+	}
+	if (hidden != undefined && tabInfo) {
+		if (DEBUG) console.log(`tab hidden updated ${tabId} ${hidden}`)
+		tabInfo.hidden = hidden
 		changed = true
 	}
 	if (changed) preloadWindow(windowId)
