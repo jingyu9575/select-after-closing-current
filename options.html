@@ -9,7 +9,8 @@
 </head>
 
 <body>
-	<div id="commandOrderSection">
+	<section>
+		<h2 data-i18n="general"></h2>
 		<div data-i18n="commandOrderDescription"></div>
 		<div id="commandOrder">
 			<div id="commandOrderHeader">
@@ -23,26 +24,23 @@
 			<img src="icons/plus.svg">
 			<label data-i18n="add"></label>
 		</button>
-	</div>
-	<div>
+	</section>
+	<section>
+		<h2 data-i18n="compatibility"></h2>
 		<label class="middle-aligned">
 			<input id="bug1366290MitigationInput" type="checkbox">
 			<span data-i18n='bug1366290Mitigation'></span>
 		</label>
-	</div>
-	<div>
 		<label class="middle-aligned">
 			<input id="disableFromNewTabInput" type="checkbox">
 			<span data-i18n='disableFromNewTab'></span>
 		</label>
-	</div>
-	<div class="shortcut-support">
-		<p>
-			<div data-i18n="shortcuts"></div>
-			<div data-i18n="shortcutDescription"></div>
-		</p>
+	</section>
+	<section class="shortcut-support">
+		<h2 data-i18n="shortcuts"></h2>
+		<div data-i18n="shortcutDescription"></div>
 		<div id='shortcuts-customize-ui'></div>
-	</div>
+	</section>
 	<p id="shortcutCompatibilityNote" data-i18n="shortcutCompatibilityNote"></p>
 	<p>
 		<a target="_blank" href="3rd-party/LICENSE-3RD-PARTY.txt" data-i18n="license3rdParty"></a>
@@ -63,7 +61,7 @@
 			<option value="unread"></option>
 			<option value="unreadChild"></option>
 		</select>
-		<select class="closeShortcutSelect gap-left shortcut-support" data-key="closeShortcut">
+		<select class="gap-left shortcut-support" data-key="closeShortcut">
 			<option value="undefined" selected></option>
 			<option value="1"></option>
 			<option value="2"></option>

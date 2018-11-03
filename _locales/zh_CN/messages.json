@@ -5,6 +5,9 @@
 	"extensionDescription": {
 		"message": "设置关闭当前标签页后选取哪个标签页。"
 	},
+	"general": {
+		"message": "常规"
+	},
 	"commandOrderDescription": {
 		"message": "关闭当前标签页后，按以下顺序尝试选取："
 	},
@@ -83,6 +86,9 @@
 	"closeShortcut_5": {
 		"message": "快捷键 5"
 	},
+	"compatibility": {
+		"message": "兼容性"
+	},
 	"bug1366290Mitigation": {
 		"message": "如果浏览器受到火狐 Bug 1366290 的影响（56 或更低版本）, 选中此项来减轻影响"
 	},
@@ -96,7 +102,7 @@
 		"message": "更新到火狐 60 或更高版本以启用快捷键功能。"
 	},
 	"shortcuts": {
-		"message": "快捷键: "
+		"message": "快捷键"
 	},
 	"shortcutDescription": {
 		"message": "用这些快捷键关闭当前页时，只会使用选取顺序中设为同一快捷键的项目。"

@@ -5,6 +5,9 @@
 	"extensionDescription": {
 		"message": "Configure which tab to select after closing the current tab."
 	},
+	"general": {
+		"message": "General"
+	},
 	"commandOrderDescription": {
 		"message": "After closing the current tab, try selecting in this order: "
 	},
@@ -83,6 +86,9 @@
 	"closeShortcut_5": {
 		"message": "Shortcut 5"
 	},
+	"compatibility": {
+		"message": "Compatibility"
+	},
 	"bug1366290Mitigation": {
 		"message": "If your browser are affected by Firefox's Bug 1366290 (version 56 or earlier), check this to mitigate it"
 	},
@@ -96,7 +102,7 @@
 		"message": "Update to Firefox 60 or later for shortcut support."
 	},
 	"shortcuts": {
-		"message": "Shortcuts: "
+		"message": "Shortcuts"
 	},
 	"shortcutDescription": {
 		"message": "When using these shortcuts to close the current tab, only the corresponding items in the selection order are considered."
