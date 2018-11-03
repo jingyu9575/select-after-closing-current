@@ -112,5 +112,14 @@
 	},
 	"shortcutsDescription": {
 		"message": "When using these shortcuts to close the current tab, only the corresponding items in the selection order are considered."
+	},
+	"exclusions": {
+		"message": "Exclusions"
+	},
+	"exclusionsDescription": {
+		"message": "Prevent the extension from selecting these pages. One address per line."
+	},
+	"saveDesc": {
+		"message": "Click outside the text fields to save."
 	}
 }

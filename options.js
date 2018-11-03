@@ -5,6 +5,7 @@ const commandTemplate = document.getElementById("commandTemplate")
 const commandOrderDiv = document.getElementById("commandOrder")
 const bug1366290MitigationInput = document.getElementById("bug1366290MitigationInput")
 const disableFromNewTabInput = document.getElementById("disableFromNewTabInput")
+const exclusions = document.getElementById("exclusions")
 
 function updateSingleRelationStyle(command) {
 	const relationSelect = command.querySelector('.relationSelect')
@@ -70,6 +71,7 @@ async function reloadSettings() {
 	}
 	bug1366290MitigationInput.checked = !!settings.bug1366290Mitigation
 	disableFromNewTabInput.checked = !!settings.disableFromNewTab
+	exclusions.value = settings.exclusions || ""
 }
 
 async function saveSettings() {
@@ -90,6 +92,11 @@ async function saveSettings() {
 
 bug1366290MitigationInput.addEventListener('change', saveSettings)
 disableFromNewTabInput.addEventListener('change', saveSettings)
+
+exclusions.addEventListener('change', async () => {
+	await browser.storage.local.set({ exclusions: exclusions.value })
+	await browser.runtime.sendMessage({ type: 'reloadSettings' })
+})
 
 void async function () {
 	await reloadSettings()

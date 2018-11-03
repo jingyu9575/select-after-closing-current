@@ -93,3 +93,10 @@ section > h2 {
 #shortcuts-customize-ui .shortcut > label:first-of-type {
 	margin-inline-end: 4ch;
 }
+
+#exclusions {
+	width: 60ch;
+	height: 10em;
+	margin: 0.5em 0;
+	white-space: pre;
+}

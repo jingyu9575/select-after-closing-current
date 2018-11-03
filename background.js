@@ -1,6 +1,7 @@
 let DEBUG = false
 
 let globalSettings = { commandOrder: [] }
+let exclusions = []
 
 async function reloadSettings() {
 	const settings = await browser.storage.local.get()
@@ -27,6 +28,8 @@ async function reloadSettings() {
 		await browser.storage.local.set(settings)
 	}
 	globalSettings = settings
+	exclusions = new Set((settings.exclusions || '').split(/[\r\n]/).map(v => v.trim()))
+	exclusions.delete('')
 }
 
 browser.runtime.onMessage.addListener(async message => {
@@ -152,8 +155,11 @@ const multipleRelationPredicates = {
 }
 
 function isSelectionAllowed(command, selectedId) {
-	return !command.skipHidden
-		|| (tabInfoMap.has(selectedId) && !tabInfoMap.get(selectedId).hidden)
+	const tabInfo = tabInfoMap.get(selectedId)
+	if (!tabInfo) return false
+	if (exclusions.has(tabInfo.url)) return false
+	if (command.skipHidden && tabInfo.hidden) return false
+	return true
 }
 
 function selectCommand(command, data /* { tabId, windowId, windowInfo } */) {
@@ -229,9 +235,9 @@ function doDetachTab(tabId, windowId) {
 	arrayRemoveOne(windowInfo.recent, tabId)
 }
 
-function doCreateTab({ id, windowId, index, openerTabId, hidden }) {
+function doCreateTab({ id, windowId, index, openerTabId, hidden, url }) {
 	if (tabInfoMap.has(id)) return // may be called twice on startup
-	tabInfoMap.set(id, { windowId, openerTabId, unread: false, hidden })
+	tabInfoMap.set(id, { windowId, openerTabId, unread: false, hidden, url })
 	windowInfoMap.insert(windowId).tabs.splice(index, 0, id)
 }
 
@@ -310,12 +316,18 @@ browser.windows.onRemoved.addListener(windowId => {
 
 browser.tabs.onUpdated.addListener((tabId, { status, url, hidden }, { active, windowId }) => {
 	const windowInfo = windowInfoMap.insert(windowId)
+	const tabInfo = tabInfoMap.get(tabId)
+
 	let changed = false
+	if (url) {
+		if (exclusions.has(url) !== exclusions.has(tabInfo.url))
+			changed = true
+		tabInfo.url = url
+	}
 	if (url && windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId) {
 		windowInfo.newTabStatus = undefined
 		changed = true
 	}
-	const tabInfo = tabInfoMap.get(tabId)
 	if (!active && status === 'complete' && tabInfo) {
 		if (DEBUG) console.log(`tab is unread ${tabId}`)
 		tabInfo.unread = true

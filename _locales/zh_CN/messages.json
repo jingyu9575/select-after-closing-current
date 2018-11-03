@@ -112,5 +112,14 @@
 	},
 	"shortcutsDescription": {
 		"message": "用这些快捷键关闭当前页时，只会使用选取顺序中设为同一快捷键的项目。"
+	},
+	"exclusions": {
+		"message": "排除"
+	},
+	"exclusionsDescription": {
+		"message": "阻止扩展选取以下页面。每行一个网址。"
+	},
+	"saveDesc": {
+		"message": "单击输入框外来保存。"
 	}
 }
