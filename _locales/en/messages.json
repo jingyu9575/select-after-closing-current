@@ -62,6 +62,9 @@
 	"relation_unreadChild": {
 		"message": "unread child tab"
 	},
+	"relation_unreadSibling": {
+		"message": "unread sibling tab"
+	},
 	"skipHidden": {
 		"message": "Skip hidden"
 	},

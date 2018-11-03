@@ -62,6 +62,9 @@
 	"relation_unreadChild": {
 		"message": "未读子标签页"
 	},
+	"relation_unreadSibling": {
+		"message": "未读同级标签页"
+	},
 	"skipHidden": {
 		"message": "跳过隐藏"
 	},

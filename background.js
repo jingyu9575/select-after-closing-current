@@ -141,9 +141,13 @@ const multipleRelationPredicates = {
 		return tabInfoMap.get(target).openerTabId === tabId
 	},
 	unread(target) { return tabInfoMap.get(target).unread },
-	unreadChild(target, { tabId }) {
-		const tabInfo = tabInfoMap.get(target)
-		return tabInfo.openerTabId === tabId && tabInfo.unread
+	unreadChild(target, data) {
+		return multipleRelationPredicates.unread(target, data)
+			&& multipleRelationPredicates.child(target, data)
+	},
+	unreadSibling(target, data) {
+		return multipleRelationPredicates.unread(target, data)
+			&& multipleRelationPredicates.sibling(target, data)
 	},
 }
 
