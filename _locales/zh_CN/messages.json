@@ -110,7 +110,7 @@
 	"shortcuts": {
 		"message": "快捷键"
 	},
-	"shortcutDescription": {
+	"shortcutsDescription": {
 		"message": "用这些快捷键关闭当前页时，只会使用选取顺序中设为同一快捷键的项目。"
 	}
 }

@@ -110,7 +110,7 @@
 	"shortcuts": {
 		"message": "Shortcuts"
 	},
-	"shortcutDescription": {
+	"shortcutsDescription": {
 		"message": "When using these shortcuts to close the current tab, only the corresponding items in the selection order are considered."
 	}
 }
