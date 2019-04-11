@@ -159,6 +159,7 @@ function isSelectionAllowed(command, selectedId) {
 	if (!tabInfo) return false
 	if (exclusions.has(tabInfo.url)) return false
 	if (command.skipHidden && tabInfo.hidden) return false
+	if (command.skipUnloaded && tabInfo.discarded) return false
 	return true
 }
 
@@ -235,9 +236,9 @@ function doDetachTab(tabId, windowId) {
 	arrayRemoveOne(windowInfo.recent, tabId)
 }
 
-function doCreateTab({ id, windowId, index, openerTabId, hidden, url }) {
+function doCreateTab({ id, windowId, index, openerTabId, hidden, discarded, url }) {
 	if (tabInfoMap.has(id)) return // may be called twice on startup
-	tabInfoMap.set(id, { windowId, openerTabId, unread: false, hidden, url })
+	tabInfoMap.set(id, { windowId, openerTabId, unread: false, hidden, discarded, url })
 	windowInfoMap.insert(windowId).tabs.splice(index, 0, id)
 }
 
@@ -314,7 +315,8 @@ browser.windows.onRemoved.addListener(windowId => {
 	windowInfoMap.delete(windowId)
 })
 
-browser.tabs.onUpdated.addListener((tabId, { status, url, hidden }, { active, windowId }) => {
+browser.tabs.onUpdated.addListener((tabId,
+	{ status, url, hidden, discarded }, { active, windowId }) => {
 	const windowInfo = windowInfoMap.insert(windowId)
 	const tabInfo = tabInfoMap.get(tabId)
 
@@ -336,6 +338,11 @@ browser.tabs.onUpdated.addListener((tabId, { status, url, hidden }, { active, wi
 	if (hidden != undefined && tabInfo) {
 		if (DEBUG) console.log(`tab hidden updated ${tabId} ${hidden}`)
 		tabInfo.hidden = hidden
+		changed = true
+	}
+	if (discarded != undefined && tabInfo) {
+		if (DEBUG) console.log(`tab discarded updated ${tabId} ${discarded}`)
+		tabInfo.discarded = discarded
 		changed = true
 	}
 	if (changed) preloadWindow(windowId)

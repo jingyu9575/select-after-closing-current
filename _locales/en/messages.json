@@ -68,6 +68,9 @@
 	"skipHidden": {
 		"message": "Skip hidden"
 	},
+	"skipUnloaded": {
+		"message": "Skip unloaded"
+	},
 	"actions": {
 		"message": "Actions"
 	},

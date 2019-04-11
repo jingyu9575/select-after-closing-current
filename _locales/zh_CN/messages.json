@@ -68,6 +68,9 @@
 	"skipHidden": {
 		"message": "跳过隐藏"
 	},
+	"skipUnloaded": {
+		"message": "跳过未载入"
+	},
 	"actions": {
 		"message": "动作"
 	},
