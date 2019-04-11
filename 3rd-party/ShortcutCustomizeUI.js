@@ -291,7 +291,7 @@ const ShortcutCustomizeUI = {
       case 'left':
         return 'Left';
       case 'right':
-        return 'right';
+        return 'Right';
       case 'next':
       case 'medianexttrack':
       case 'mediatracknext':
