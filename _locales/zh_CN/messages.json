@@ -102,7 +102,19 @@
 		"message": "如果浏览器受到火狐 Bug 1366290 的影响（56 或更低版本）, 选中此项来减轻影响"
 	},
 	"disableFromNewTab": {
-		"message": "当关闭新打开的 about:newtab 时禁用"
+		"message": "修复从地址栏切换标签页的问题（需要火狐 65 或更高版本）"
+	},
+	"loadCustomNewTabUrlDesc": {
+		"message": "如果浏览器使用自定义新标签页，单击下方按钮来向它应用修复："
+	},
+	"loadCustomNewTabUrl": {
+		"message": "应用到自定义新标签页"
+	},
+	"requiresPermission": {
+		"message": "（需要权限）"
+	},
+	"permissionGranted": {
+		"message": "已授权。"
 	},
 	"license3rdParty": {
 		"message": "第三方版权声明（英文）"

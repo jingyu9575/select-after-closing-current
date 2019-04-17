@@ -102,7 +102,19 @@
 		"message": "If your browser are affected by Firefox's Bug 1366290 (version 56 or earlier), check this to mitigate it"
 	},
 	"disableFromNewTab": {
-		"message": "Disable if the closed tab is a newly created about:newtab"
+		"message": "Fix incompatibility with switching to tab from the address bar (requires Firefox 65 or later)"
+	},
+	"loadCustomNewTabUrlDesc": {
+		"message": "If you are using a custom new tab page, click the following button to apply this fix on it:"
+	},
+	"loadCustomNewTabUrl": {
+		"message": "Apply on custom new tab"
+	},
+	"requiresPermission": {
+		"message": "(requires a permission)"
+	},
+	"permissionGranted": {
+		"message": "Permission granted."
 	},
 	"license3rdParty": {
 		"message": "Third-Party Copyright Notices"

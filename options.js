@@ -98,6 +98,16 @@ exclusions.addEventListener('change', async () => {
 	await browser.runtime.sendMessage({ type: 'reloadSettings' })
 })
 
+const loadCustomNewTabUrlButton = document.getElementById('loadCustomNewTabUrl')
+
+loadCustomNewTabUrlButton.addEventListener('click', async () => {
+	if (await browser.permissions.request({ permissions: ['browserSettings'] })) {
+		browser.runtime.sendMessage({ type: 'loadCustomNewTabUrl' })
+		document.getElementById('loadCustomNewTabUrlNote').textContent = 
+			browser.i18n.getMessage('permissionGranted')
+	}
+})
+
 void async function () {
 	await reloadSettings()
 	document.getElementById('add').disabled = false

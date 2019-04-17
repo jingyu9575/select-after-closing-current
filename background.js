@@ -2,6 +2,7 @@ let DEBUG = false
 
 let globalSettings = { commandOrder: [] }
 let exclusions = []
+let customNewTabUrl = 'about:newtab'
 
 async function reloadSettings() {
 	const settings = await browser.storage.local.get()
@@ -32,11 +33,20 @@ async function reloadSettings() {
 	exclusions.delete('')
 }
 
+async function loadCustomNewTabUrl() {
+	if (!browser.browserSettings || !browser.browserSettings.newTabPageOverride)
+		return
+	customNewTabUrl = (await browser.browserSettings.newTabPageOverride.get({})).value
+}
+loadCustomNewTabUrl()
+
 browser.runtime.onMessage.addListener(async message => {
 	if (!message || typeof message !== 'object') return
 	if (message.type === 'reloadSettings') {
 		await reloadSettings()
 		return globalSettings
+	} else if (message.type === 'loadCustomNewTabUrl') {
+		loadCustomNewTabUrl()
 	}
 })
 
@@ -242,9 +252,13 @@ function doCreateTab({ id, windowId, index, openerTabId, hidden, discarded, url 
 	windowInfoMap.insert(windowId).tabs.splice(index, 0, id)
 }
 
+function isNewTabUrl(url) {
+	return url === 'about:newtab' || url === 'about:blank' || url === customNewTabUrl
+}
+
 browser.tabs.onCreated.addListener(tab => {
 	if (DEBUG) console.log(`tabs.onCreated ${tab.id}`)
-	if (tab.active && tab.url === 'about:newtab')
+	if (tab.active && isNewTabUrl(tab.url))
 		windowInfoMap.insert(tab.windowId).newTabStatus = { tabId: tab.id }
 	doCreateTab(tab)
 	checkConsistency()
@@ -324,11 +338,12 @@ browser.tabs.onUpdated.addListener((tabId,
 	if (url) {
 		if (exclusions.has(url) !== exclusions.has(tabInfo.url))
 			changed = true
+		if (windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId
+			&& !isNewTabUrl(url)) {
+			windowInfo.newTabStatus = undefined
+			changed = true
+		}
 		tabInfo.url = url
-	}
-	if (url && windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId) {
-		windowInfo.newTabStatus = undefined
-		changed = true
 	}
 	if (!active && status === 'complete' && tabInfo) {
 		if (DEBUG) console.log(`tab is unread ${tabId}`)
@@ -378,8 +393,16 @@ function preloadWindow(windowId) {
 	void browser.tabs.update(tabId, { successorTabId })
 }
 
-void async function () {
+const initialization = async function () {
 	for (const tab of await browser.tabs.query({})) doCreateTab(tab)
 	await reloadSettings()
 	for (const { id } of await browser.windows.getAll()) preloadWindow(id)
 }()
+
+browser.runtime.onInstalled.addListener(async ({ reason }) => {
+	if (reason !== "install") return
+	if (!('moveInSuccession' in browser.tabs)) return
+	await initialization
+	await browser.storage.local.set({disableFromNewTab: true})
+	await reloadSettings()
+})

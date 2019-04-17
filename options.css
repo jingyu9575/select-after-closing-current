@@ -73,6 +73,10 @@ section > h2 {
 	vertical-align: middle;
 }
 
+.indent-only {
+	visibility: hidden;
+}
+
 :root.no-shortcut-support .shortcut-support {
 	display: none !important;
 }
