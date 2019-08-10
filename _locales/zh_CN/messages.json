@@ -65,6 +65,12 @@
 	"relation_unreadSibling": {
 		"message": "未读同级标签页"
 	},
+	"relation_pinned": {
+		"message": "固定标签页"
+	},
+	"relation_unpinned": {
+		"message": "未固定标签页"
+	},
 	"skipHidden": {
 		"message": "跳过隐藏"
 	},

@@ -65,6 +65,12 @@
 	"relation_unreadSibling": {
 		"message": "unread sibling tab"
 	},
+	"relation_pinned": {
+		"message": "pinned tab"
+	},
+	"relation_unpinned": {
+		"message": "unpinned tab"
+	},
 	"skipHidden": {
 		"message": "Skip hidden"
 	},

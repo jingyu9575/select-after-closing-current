@@ -162,6 +162,8 @@ const multipleRelationPredicates = {
 		return multipleRelationPredicates.unread(target, data)
 			&& multipleRelationPredicates.sibling(target, data)
 	},
+	pinned(target) { return tabInfoMap.get(target).pinned },
+	unpinned(target) { return !tabInfoMap.get(target).pinned },
 }
 
 function isSelectionAllowed(command, selectedId) {
@@ -246,9 +248,12 @@ function doDetachTab(tabId, windowId) {
 	arrayRemoveOne(windowInfo.recent, tabId)
 }
 
-function doCreateTab({ id, windowId, index, openerTabId, hidden, discarded, url }) {
+function doCreateTab({ 
+	id, windowId, index, openerTabId, hidden, discarded, pinned, url
+}) {
 	if (tabInfoMap.has(id)) return // may be called twice on startup
-	tabInfoMap.set(id, { windowId, openerTabId, unread: false, hidden, discarded, url })
+	tabInfoMap.set(id, 
+		{ windowId, openerTabId, unread: false, hidden, discarded, pinned, url })
 	windowInfoMap.insert(windowId).tabs.splice(index, 0, id)
 }
 
@@ -330,7 +335,7 @@ browser.windows.onRemoved.addListener(windowId => {
 })
 
 browser.tabs.onUpdated.addListener((tabId,
-	{ status, url, hidden, discarded }, { active, windowId }) => {
+	{ status, url, hidden, discarded, pinned }, { active, windowId }) => {
 	const windowInfo = windowInfoMap.insert(windowId)
 	const tabInfo = tabInfoMap.get(tabId)
 
@@ -358,6 +363,11 @@ browser.tabs.onUpdated.addListener((tabId,
 	if (discarded != undefined && tabInfo) {
 		if (DEBUG) console.log(`tab discarded updated ${tabId} ${discarded}`)
 		tabInfo.discarded = discarded
+		changed = true
+	}
+	if (pinned != undefined && tabInfo) {
+		if (DEBUG) console.log(`tab pinned updated ${tabId} ${pinned}`)
+		tabInfo.pinned = pinned
 		changed = true
 	}
 	if (changed) preloadWindow(windowId)
