@@ -122,6 +122,9 @@
 	"permissionGranted": {
 		"message": "Permission granted."
 	},
+	"reloadDiscardedTarget": {
+		"message": "Reload the selected tab if it is discarded"
+	},
 	"license3rdParty": {
 		"message": "Third-Party Copyright Notices"
 	},

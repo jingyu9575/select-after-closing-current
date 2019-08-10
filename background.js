@@ -242,17 +242,24 @@ function doDetachTab(tabId, windowId) {
 					preloadWindow(windowId)
 				}
 			)
+			if (DEBUG) console.log(tabInfoMap.get(selectedId))
+
+			if (globalSettings.reloadDiscardedTarget &&
+				(tabInfoMap.get(selectedId) || {}).discarded) {
+				if (DEBUG) console.log(`reload discarded ${selectedId}`)
+				void browser.tabs.reload(selectedId, { bypassCache: true })
+			}
 		}
 	}
 	arrayRemoveOne(windowInfo.tabs, tabId)
 	arrayRemoveOne(windowInfo.recent, tabId)
 }
 
-function doCreateTab({ 
+function doCreateTab({
 	id, windowId, index, openerTabId, hidden, discarded, pinned, url
 }) {
 	if (tabInfoMap.has(id)) return // may be called twice on startup
-	tabInfoMap.set(id, 
+	tabInfoMap.set(id,
 		{ windowId, openerTabId, unread: false, hidden, discarded, pinned, url })
 	windowInfoMap.insert(windowId).tabs.splice(index, 0, id)
 }
@@ -413,6 +420,6 @@ browser.runtime.onInstalled.addListener(async ({ reason }) => {
 	if (reason !== "install") return
 	if (!('moveInSuccession' in browser.tabs)) return
 	await initialization
-	await browser.storage.local.set({disableFromNewTab: true})
+	await browser.storage.local.set({ disableFromNewTab: true })
 	await reloadSettings()
 })
