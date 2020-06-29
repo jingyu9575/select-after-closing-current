@@ -1,13 +1,13 @@
 {
 	"manifest_version": 2,
-	"applications": {
+	"browser_specific_settings": {
 		"gecko": {
 			"id": "select-after-closing-current@qw.linux-2g64.local",
 			"strict_min_version": "57.0"
 		}
 	},
 	"name": "__MSG_extensionName__",
-	"version": "4.3",
+	"version": "4.4",
 	"description": "__MSG_extensionDescription__",
 	"icons": {
 		"48": "icons/icon.svg"

@@ -30,6 +30,14 @@
 	<section>
 		<h2 data-i18n="compatibility"></h2>
 		<label class="middle-aligned">
+			<span data-i18n='operatingMode'></span>
+			<select id='operatingMode'>
+				<option value="" data-i18n="mixed"></option>
+				<option value="no-classic">v4</option>
+				<option value="no-preload">v1</option>
+			</select>
+		</label>
+		<label class="middle-aligned">
 			<input id="bug1366290MitigationInput" type="checkbox">
 			<span data-i18n='bug1366290Mitigation'></span>
 		</label>

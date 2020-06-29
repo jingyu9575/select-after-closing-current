@@ -116,6 +116,12 @@
 	"loadCustomNewTabUrl": {
 		"message": "应用到自定义新标签页"
 	},
+	"operatingMode": {
+		"message": "工作模式："
+	},
+	"mixed": {
+		"message": "混合"
+	},
 	"requiresPermission": {
 		"message": "（需要权限）"
 	},

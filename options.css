@@ -85,6 +85,10 @@ section > h2 {
 	display: none;
 }
 
+#operatingMode {
+	margin-inline-start: 1ch;
+}
+
 #shortcuts-customize-ui .shortcut {
 	align-items: center;
 }

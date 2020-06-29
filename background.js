@@ -226,7 +226,8 @@ function doDetachTab(tabId, windowId) {
 	if (tabId === windowInfo.recent[windowInfo.recent.length - 1] &&
 		!Array.isArray(windowInfo.frozenStatus) &&
 		!(globalSettings.disableFromNewTab &&
-			windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId)) {
+			windowInfo.newTabStatus && windowInfo.newTabStatus.tabId === tabId) &&
+		globalSettings.operatingMode !== 'no-classic') {
 		const selectedId = resolveSelection({ tabId, windowId, windowInfo })
 		if (selectedId !== undefined) {
 			if (DEBUG) console.log(`selected ${selectedId}`)
@@ -248,11 +249,11 @@ function doDetachTab(tabId, windowId) {
 	arrayRemoveOne(windowInfo.recent, tabId)
 }
 
-function doCreateTab({ 
+function doCreateTab({
 	id, windowId, index, openerTabId, hidden, discarded, pinned, url
 }) {
 	if (tabInfoMap.has(id)) return // may be called twice on startup
-	tabInfoMap.set(id, 
+	tabInfoMap.set(id,
 		{ windowId, openerTabId, unread: false, hidden, discarded, pinned, url })
 	windowInfoMap.insert(windowId).tabs.splice(index, 0, id)
 }
@@ -394,6 +395,7 @@ browser.commands.onCommand.addListener(async command => {
 
 function preloadWindow(windowId) {
 	if (!('moveInSuccession' in browser.tabs)) return
+	if (globalSettings.operatingMode === 'no-preload') return
 	const windowInfo = windowInfoMap.insert(windowId)
 	const tabId = windowInfo.recent[windowInfo.recent.length - 1]
 	if (tabId === undefined) return
@@ -413,6 +415,6 @@ browser.runtime.onInstalled.addListener(async ({ reason }) => {
 	if (reason !== "install") return
 	if (!('moveInSuccession' in browser.tabs)) return
 	await initialization
-	await browser.storage.local.set({disableFromNewTab: true})
+	await browser.storage.local.set({ disableFromNewTab: true })
 	await reloadSettings()
 })

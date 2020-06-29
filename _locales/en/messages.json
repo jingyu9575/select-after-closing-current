@@ -116,6 +116,12 @@
 	"loadCustomNewTabUrl": {
 		"message": "Apply on custom new tab"
 	},
+	"operatingMode": {
+		"message": "Operating mode:"
+	},
+	"mixed": {
+		"message": "Mixed"
+	},
 	"requiresPermission": {
 		"message": "(requires a permission)"
 	},
