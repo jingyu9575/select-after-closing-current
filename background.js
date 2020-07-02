@@ -10,7 +10,7 @@ async function reloadSettings() {
 	settings.version = settings.version || 0
 	if (typeof settings.commandOrder[0] === 'string') settings.version = 1
 
-	const needMigrate = !settings.version || settings.version < 2
+	const needMigrate = !settings.version || settings.version < 5
 	if (needMigrate) {
 		if (settings.version < 1 && !settings.commandOrder.length) {
 			settings.version = 1
@@ -25,6 +25,12 @@ async function reloadSettings() {
 					right: { position: 'right', relation: 'none' },
 					opener: { position: 'first', relation: 'parent' },
 				}[value] : value)
+		}
+		if (settings.version < 5) {
+			settings.version = 5
+			for (const item of settings.commandOrder)
+				if (item.relation === 'lastAccessed' || item.relation === 'parent')
+					item.position = 'first'
 		}
 		await browser.storage.local.set(settings)
 	}
