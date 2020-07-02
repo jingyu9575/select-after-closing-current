@@ -9,10 +9,13 @@ const exclusions = document.getElementById("exclusions")
 const operatingModeSelect = document.getElementById("operatingMode")
 
 function updateSingleRelationStyle(command) {
+	const positionSelect = command.querySelector('.positionSelect')
+	const positionOption = positionSelect.options[positionSelect.selectedIndex]
 	const relationSelect = command.querySelector('.relationSelect')
-	const option = relationSelect.options[relationSelect.selectedIndex]
-	command.classList.toggle('singleRelation', option &&
-		option.classList.contains('singleRelation'))
+	const relationOption = relationSelect.options[relationSelect.selectedIndex]
+	command.classList.toggle('singleRelation',
+		positionOption && positionOption.classList.contains('singleRelation') &&
+		relationOption && relationOption.classList.contains('singleRelation'))
 }
 
 function addCommand() {
@@ -27,6 +30,8 @@ function addCommand() {
 	commandOrderDiv.appendChild(command)
 	commandOrderDiv.classList.add('hasCommand')
 
+	command.querySelector('.positionSelect').addEventListener('change',
+		() => { updateSingleRelationStyle(command) })
 	command.querySelector('.relationSelect').addEventListener('change',
 		() => { updateSingleRelationStyle(command) })
 
@@ -107,7 +112,7 @@ const loadCustomNewTabUrlButton = document.getElementById('loadCustomNewTabUrl')
 loadCustomNewTabUrlButton.addEventListener('click', async () => {
 	if (await browser.permissions.request({ permissions: ['browserSettings'] })) {
 		browser.runtime.sendMessage({ type: 'loadCustomNewTabUrl' })
-		document.getElementById('loadCustomNewTabUrlNote').textContent = 
+		document.getElementById('loadCustomNewTabUrlNote').textContent =
 			browser.i18n.getMessage('permissionGranted')
 	}
 })

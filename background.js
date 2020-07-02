@@ -176,23 +176,30 @@ function isSelectionAllowed(command, selectedId) {
 }
 
 function selectCommand(command, data /* { tabId, windowId, windowInfo } */) {
+	const { tabs } = data.windowInfo
+	const isPositionFiltered = command.position !== 'first'
+		&& command.position !== 'last'
+	const index = isPositionFiltered ? tabs.indexOf(data.tabId) : 0
+	const [begin, end, step] = {
+		first: [0, tabs.length, 1],
+		last: [tabs.length - 1, -1, -1],
+		left: [index - 1, -1, -1],
+		right: [index + 1, tabs.length, 1],
+	}[command.position]
 	if (command.relation in singleRelationMethods) {
-		for (const selectedId of singleRelationMethods[command.relation](data))
+		for (const selectedId of singleRelationMethods[command.relation](data)) {
+			if (isPositionFiltered) {
+				const selectedIndex = tabs.indexOf(selectedId)
+				if (!(step > 0 ? selectedIndex >= begin && selectedIndex < end :
+					selectedIndex <= begin && selectedIndex > end)) continue
+			}
 			if (isSelectionAllowed(command, selectedId))
 				return selectedId
+		}
 		return undefined
 	}
 	if (command.relation in multipleRelationPredicates) {
-		const { tabs } = data.windowInfo
-		const index = ['left', 'right'].includes(command.position) ?
-			tabs.indexOf(data.tabId) : 0
 		if (index === -1) return undefined
-		const [begin, end, step] = {
-			first: [0, tabs.length, 1],
-			last: [tabs.length - 1, -1, -1],
-			left: [index - 1, -1, -1],
-			right: [index + 1, tabs.length, 1],
-		}[command.position]
 		const predicate = multipleRelationPredicates[command.relation]
 		for (let i = begin; i !== end; i += step)
 			if (tabs[i] !== data.tabId && predicate(tabs[i], data)
