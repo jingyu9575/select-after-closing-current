@@ -38,6 +38,12 @@
 	"position_last": {
 		"message": "Last"
 	},
+	"position_leftAdjacent": {
+		"message": "Left adjacent"
+	},
+	"position_rightAdjacent": {
+		"message": "Right adjacent"
+	},
 	"relation": {
 		"message": "Relation"
 	},

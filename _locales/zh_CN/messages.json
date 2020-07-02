@@ -38,6 +38,12 @@
 	"position_last": {
 		"message": "最后一个"
 	},
+	"position_leftAdjacent": {
+		"message": "左侧相邻"
+	},
+	"position_rightAdjacent": {
+		"message": "右侧相邻"
+	},
 	"relation": {
 		"message": "关系"
 	},

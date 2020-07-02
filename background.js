@@ -185,6 +185,8 @@ function selectCommand(command, data /* { tabId, windowId, windowInfo } */) {
 		last: [tabs.length - 1, -1, -1],
 		left: [index - 1, -1, -1],
 		right: [index + 1, tabs.length, 1],
+		leftAdjacent: [index - 1, Math.max(index - 2, -1), -1],
+		rightAdjacent: [index + 1, Math.min(index + 2, tabs.length), 1],
 	}[command.position]
 	if (command.relation in singleRelationMethods) {
 		for (const selectedId of singleRelationMethods[command.relation](data)) {
