@@ -1,0 +1,158 @@
+{
+	"extensionName": {
+		"message": "關閉目前分頁後選取"
+	},
+	"extensionDescription": {
+		"message": "設定關閉目前分頁後選取哪個分頁。"
+	},
+	"general": {
+		"message": "一般"
+	},
+	"commandOrderDescription": {
+		"message": "關閉目前分頁後，依照以下順序嘗試選取："
+	},
+	"add": {
+		"message": "新增"
+	},
+	"up": {
+		"message": "上移"
+	},
+	"down": {
+		"message": "下移"
+	},
+	"remove": {
+		"message": "刪除"
+	},
+	"position": {
+		"message": "位置"
+	},
+	"position_first": {
+		"message": "第一個"
+	},
+	"position_left": {
+		"message": "左側"
+	},
+	"position_right": {
+		"message": "右側"
+	},
+	"position_last": {
+		"message": "最後一個"
+	},
+	"position_leftAdjacent": {
+		"message": "左側相鄰"
+	},
+	"position_rightAdjacent": {
+		"message": "右側相鄰"
+	},
+	"relation": {
+		"message": "關係"
+	},
+	"relation_none": {
+		"message": "分頁"
+	},
+	"relation_lastAccessed": {
+		"message": "最近造訪分頁"
+	},
+	"relation_parent": {
+		"message": "父分頁"
+	},
+	"relation_sibling": {
+		"message": "同層級分頁"
+	},
+	"relation_child": {
+		"message": "子分頁"
+	},
+	"relation_unread": {
+		"message": "未讀分頁"
+	},
+	"relation_unreadChild": {
+		"message": "未讀子分頁"
+	},
+	"relation_unreadSibling": {
+		"message": "未讀同層級分頁"
+	},
+	"relation_pinned": {
+		"message": "固定分頁"
+	},
+	"relation_unpinned": {
+		"message": "未固定分頁"
+	},
+	"skipHidden": {
+		"message": "跳過隱藏"
+	},
+	"skipUnloaded": {
+		"message": "跳過未載入"
+	},
+	"actions": {
+		"message": "動作"
+	},
+	"closeShortcut": {
+		"message": "關閉目前分頁的快速鍵"
+	},
+	"closeShortcut_undefined": {
+		"message": "無"
+	},
+	"closeShortcut_1": {
+		"message": "快速鍵 1"
+	},
+	"closeShortcut_2": {
+		"message": "快速鍵 2"
+	},
+	"closeShortcut_3": {
+		"message": "快速鍵 3"
+	},
+	"closeShortcut_4": {
+		"message": "快速鍵 4"
+	},
+	"closeShortcut_5": {
+		"message": "快速鍵 5"
+	},
+	"compatibility": {
+		"message": "相容性"
+	},
+	"bug1366290Mitigation": {
+		"message": "若瀏覽器受到火狐 Bug 1366290 的影響（56 或更低版本）, 選取此選項來減輕影響"
+	},
+	"disableFromNewTab": {
+		"message": "修復從網址列切換分頁的問題（需要火狐 65 或更高版本）"
+	},
+	"loadCustomNewTabUrlDesc": {
+		"message": "若瀏覽器使用自訂新分頁，點選下方按鈕以套用修復："
+	},
+	"loadCustomNewTabUrl": {
+		"message": "套用至自訂新分頁"
+	},
+	"operatingMode": {
+		"message": "工作模式："
+	},
+	"mixed": {
+		"message": "混合"
+	},
+	"requiresPermission": {
+		"message": "（需要權限）"
+	},
+	"permissionGranted": {
+		"message": "已授權。"
+	},
+	"license3rdParty": {
+		"message": "第三方版權聲明（英文）"
+	},
+	"shortcutCompatibilityNote": {
+		"message": "更新至火狐 60 或更高版本以啟用快速鍵功能。"
+	},
+	"shortcuts": {
+		"message": "快速鍵"
+	},
+	"shortcutsDescription": {
+		"message": "用這些快速鍵關閉目前分頁時，只會使用選取順序中設為同一快速鍵的項目。"
+	},
+	"exclusions": {
+		"message": "排除"
+	},
+	"exclusionsDescription": {
+		"message": "阻止本套件選取以下頁面。每行一個網址。"
+	},
+	"saveDesc": {
+		"message": "點選文字欄位外即可儲存設定。"
+	}
+}
