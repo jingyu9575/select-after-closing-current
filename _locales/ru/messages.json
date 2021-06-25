@@ -1,0 +1,158 @@
+{
+	"extensionName": {
+		"message": "Select After Closing Current"
+	},
+	"extensionDescription": {
+		"message": "Позволяет настроить выбор вкладки после закрытия текущей вкладки."
+	},
+	"general": {
+		"message": "Общее"
+	},
+	"commandOrderDescription": {
+		"message": "Порядок выбора вкладки после закрытия текущей: "
+	},
+	"add": {
+		"message": "Добавить"
+	},
+	"up": {
+		"message": "Выше"
+	},
+	"down": {
+		"message": "Ниже"
+	},
+	"remove": {
+		"message": "Убрать"
+	},
+	"position": {
+		"message": "Переключиться на"
+	},
+	"position_first": {
+		"message": "Первую"
+	},
+	"position_left": {
+		"message": "Левую"
+	},
+	"position_right": {
+		"message": "Правую"
+	},
+	"position_last": {
+		"message": "Последнюю"
+	},
+	"position_leftAdjacent": {
+		"message": "Ближайшую слева"
+	},
+	"position_rightAdjacent": {
+		"message": "Ближайшую справа"
+	},
+	"relation": {
+		"message": "Статус цели"
+	},
+	"relation_none": {
+		"message": "вкладку"
+	},
+	"relation_lastAccessed": {
+		"message": "Последнюю активную"
+	},
+	"relation_parent": {
+		"message": "Родительскую вкладку"
+	},
+	"relation_sibling": {
+		"message": "сестринскую вкладку"
+	},
+	"relation_child": {
+		"message": "дочернюю вкладку"
+	},
+	"relation_unread": {
+		"message": "непрочитанную вкладку"
+	},
+	"relation_unreadChild": {
+		"message": "непрочитанную дочернюю"
+	},
+	"relation_unreadSibling": {
+		"message": "непрочитанную сестринскую"
+	},
+	"relation_pinned": {
+		"message": "закрепленную вкладку"
+	},
+	"relation_unpinned": {
+		"message": "незакрепленную вкладку"
+	},
+	"skipHidden": {
+		"message": "Минуя скрытые"
+	},
+	"skipUnloaded": {
+		"message": "/ выгруженные"
+	},
+	"actions": {
+		"message": "Действия"
+	},
+	"closeShortcut": {
+		"message": "Сочетание клавиш"
+	},
+	"closeShortcut_undefined": {
+		"message": "Нет"
+	},
+	"closeShortcut_1": {
+		"message": "Сочетание 1"
+	},
+	"closeShortcut_2": {
+		"message": "Сочетание 2"
+	},
+	"closeShortcut_3": {
+		"message": "Сочетание 3"
+	},
+	"closeShortcut_4": {
+		"message": "Сочетание 4"
+	},
+	"closeShortcut_5": {
+		"message": "Сочетание 5"
+	},
+	"compatibility": {
+		"message": "Совместимость"
+	},
+	"bug1366290Mitigation": {
+		"message": "Если заметно влияние ошибки Firefox 1366290 (Fx56-), отметьте это, чтобы смягчить ее"
+	},
+	"disableFromNewTab": {
+		"message": "Исправить несовместимость с переключением на вкладку из адресной строки (Fx65+)"
+	},
+	"loadCustomNewTabUrlDesc": {
+		"message": "Примените, если используете нестандартную страницу 'Новой вкладки':"
+	},
+	"loadCustomNewTabUrl": {
+		"message": "Применить для назначенной 'Новой вкладки'."
+	},
+	"operatingMode": {
+		"message": "Режим работы:"
+	},
+	"mixed": {
+		"message": "Смешанный"
+	},
+	"requiresPermission": {
+		"message": "(требуется разрешение)"
+	},
+	"permissionGranted": {
+		"message": "Разрешение получено."
+	},
+	"license3rdParty": {
+		"message": "Уведомления об авторских правах третьих лиц"
+	},
+	"shortcutCompatibilityNote": {
+		"message": "Обновите Firefox до версии 60+ для поддержки сочетаний."
+	},
+	"shortcuts": {
+		"message": "Сочетания клавиш"
+	},
+	"shortcutsDescription": {
+		"message": "присваиваются в настройках 'Порядка выбора...' выше:"
+	},
+	"exclusions": {
+		"message": "Исключения"
+	},
+	"exclusionsDescription": {
+		"message": "Запретить переключение на эти страницы. Один адрес на строку:"
+	},
+	"saveDesc": {
+		"message": "Чтобы сохранить, щелкните вне полей ввода."
+	}
+}
