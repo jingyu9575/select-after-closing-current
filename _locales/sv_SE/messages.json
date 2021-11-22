@@ -1,0 +1,158 @@
+{
+	"extensionName": {
+		"message": "Select After Closing Current"
+	},
+	"extensionDescription": {
+		"message": "Konfigurera vilken flik som ska väljas efter att den aktuella fliken stängs."
+	},
+	"general": {
+		"message": "Allmänt"
+	},
+	"commandOrderDescription": {
+		"message": "När du har stängt den aktuella fliken, försök sedan att välja i den här ordningen: "
+	},
+	"add": {
+		"message": "Lägg till"
+	},
+	"up": {
+		"message": "Flytta upp"
+	},
+	"down": {
+		"message": "Flytta ner"
+	},
+	"remove": {
+		"message": "Ta bort"
+	},
+	"position": {
+		"message": "Placering"
+	},
+	"position_first": {
+		"message": "First"
+	},
+	"position_left": {
+		"message": "Vänster"
+	},
+	"position_right": {
+		"message": "Höger"
+	},
+	"position_last": {
+		"message": "Sist"
+	},
+	"position_leftAdjacent": {
+		"message": "Intilliggande vänster"
+	},
+	"position_rightAdjacent": {
+		"message": "Intilliggande höger"
+	},
+	"relation": {
+		"message": "Relation"
+	},
+	"relation_none": {
+		"message": "flik"
+	},
+	"relation_lastAccessed": {
+		"message": "senast öppnade fliken"
+	},
+	"relation_parent": {
+		"message": "förälderflik"
+	},
+	"relation_sibling": {
+		"message": "syskonflik"
+	},
+	"relation_child": {
+		"message": "barnflik"
+	},
+	"relation_unread": {
+		"message": "oläst flik"
+	},
+	"relation_unreadChild": {
+		"message": "oläst barnflik"
+	},
+	"relation_unreadSibling": {
+		"message": "oläst syskonflik"
+	},
+	"relation_pinned": {
+		"message": "fäst flik"
+	},
+	"relation_unpinned": {
+		"message": "lös flik"
+	},
+	"skipHidden": {
+		"message": "Hoppa över dolda"
+	},
+	"skipUnloaded": {
+		"message": "Hoppa över oladdade"
+	},
+	"actions": {
+		"message": "Åtgärder"
+	},
+	"closeShortcut": {
+		"message": "Snabbtangent för att stänga den aktuella fliken"
+	},
+	"closeShortcut_undefined": {
+		"message": "Ingen"
+	},
+	"closeShortcut_1": {
+		"message": "Snabbtangent 1"
+	},
+	"closeShortcut_2": {
+		"message": "Snabbtangent 2"
+	},
+	"closeShortcut_3": {
+		"message": "Snabbtangent 3"
+	},
+	"closeShortcut_4": {
+		"message": "Snabbtangent 4"
+	},
+	"closeShortcut_5": {
+		"message": "Snabbtangent 5"
+	},
+	"compatibility": {
+		"message": "Kompatibilitet"
+	},
+	"bug1366290Mitigation": {
+		"message": "Aktivera denna för att mildra problemet om din webbläsare påverkas av Firefox-felet 1366290 (version 56 eller tidigare)"
+	},
+	"disableFromNewTab": {
+		"message": "Åtgärdar felet med att byta till flik från adressfältet (kräver Firefox 65 eller senare)"
+	},
+	"loadCustomNewTabUrlDesc": {
+		"message": "Om du använder en anpassad ny fliksida, klicka på följande knapp för att tillämpa denna korrigering på den:"
+	},
+	"loadCustomNewTabUrl": {
+		"message": "Verkställ på anpassad ny flik"
+	},
+	"operatingMode": {
+		"message": "Driftläge:"
+	},
+	"mixed": {
+		"message": "Blandad"
+	},
+	"requiresPermission": {
+		"message": "(kräver behörighet)"
+	},
+	"permissionGranted": {
+		"message": "Behörighet beviljad."
+	},
+	"license3rdParty": {
+		"message": "Upphovsrättsmeddelanden från tredje part"
+	},
+	"shortcutCompatibilityNote": {
+		"message": "Uppdatera till Firefox 60 eller senare för snabbtangentsstöd."
+	},
+	"shortcuts": {
+		"message": "Snabbtangenter"
+	},
+	"shortcutsDescription": {
+		"message": "När du använder dessa snabbtangenter för att stänga den aktuella fliken, så beaktas endast motsvarande objekt i urvalsordningen."
+	},
+	"exclusions": {
+		"message": "Uteslutningar"
+	},
+	"exclusionsDescription": {
+		"message": "Hindra tillägget från att välja dessa sidor. En adress per rad."
+	},
+	"saveDesc": {
+		"message": "Klicka utanför textfälten för att spara."
+	}
+}
